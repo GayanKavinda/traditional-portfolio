@@ -3,6 +3,9 @@ import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import crowdImg from '@/assets/crowd.png';
 
+// UI/UX Pro Max recommended easing
+const EASING = 'cubic-bezier(0.16, 1, 0.3, 1)';
+
 interface Entry {
   company: string; role: string; period: string; year: string;
   bullets: string[]; tags: string[]; current?: boolean;
@@ -40,7 +43,11 @@ const Experience = () => {
       entryRefs.current.forEach((el, i) => {
         if (!el) return;
         gsap.from(el, {
-          x: i % 2 === 0 ? -60 : 60, opacity: 0, duration: 0.8, ease: 'power2.out', immediateRender: false,
+          x: i % 2 === 0 ? -60 : 60,
+          opacity: 0,
+          duration: 0.8,
+          ease: EASING,
+          immediateRender: false,
           scrollTrigger: { trigger: el, start: 'top 82%' }
         });
       });
@@ -72,7 +79,9 @@ const Experience = () => {
 
               <div className={`w-[44%] ${isLeft ? 'mr-auto pr-10 text-right' : 'ml-auto pl-10'}`}>
                 <div
-                  className={`rounded-lg border border-white/[0.07] p-5 ${e.current ? 'border-l-[3px] border-l-crimson border-crimson/35' : ''}`}
+                  className={`rounded-lg border border-white/[0.07] p-5 group transition-all duration-300 hover:scale-[1.02] ${
+                    e.current ? 'border-l-[3px] border-l-crimson border-crimson/35' : ''
+                  }`}
                   style={{ background: '#111' }}
                 >
                   <p className="font-mono text-[13px] text-gold">{e.company}</p>

@@ -40,6 +40,14 @@
     --sidebar-accent-foreground: 0 0% 4%;
     --sidebar-border: 0 0% 100% / 0.07;
     --sidebar-ring: 358 72% 46%;
+
+    /* UI/UX Pro Max recommended variables */
+    --easing: cubic-bezier(0.16, 1, 0.3, 1);
+    --radius-sm: 8px;
+    --radius-md: 12px;
+    --radius-lg: 16px;
+    --glass-bg: rgba(17, 17, 17, 0.7);
+    --glass-border: rgba(255, 255, 255, 0.08);
   }
 }
 
@@ -131,4 +139,41 @@
 }
 .nav-link:hover::after {
   width: 100%;
+}
+
+/* Glassmorphism effect - UI/UX Pro Max */
+.glass {
+  background: var(--glass-bg);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid var(--glass-border);
+}
+
+/* Smooth scrolling - UI/UX Pro Max recommendation */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Reduced motion - UI/UX Pro Max accessibility recommendation */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Focus visible - UI/UX Pro Max accessibility */
+:focus-visible {
+  outline: 2px solid hsl(var(--gold));
+  outline-offset: 2px;
+}
+
+/* Selection color */
+::selection {
+  background: hsl(var(--crimson) / 0.3);
+  color: hsl(var(--bone));
 }
