@@ -2,46 +2,133 @@ import { useEffect, useRef } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
-const certs = [
-  { name: 'AWS Solutions Architect', issuer: 'Amazon Web Services', date: '2024', color: '#E8A820', abbr: 'AWS' },
-  { name: 'Cloud Professional Engineer', issuer: 'Google Cloud', date: '2023', color: '#7B9FDE', abbr: 'GCP' },
-  { name: 'Certified Kubernetes Admin', issuer: 'CNCF', date: '2023', color: '#C0272D', abbr: 'CKA' },
-  { name: 'React Developer Certificate', issuer: 'Meta', date: '2022', color: '#61DAFB', abbr: 'META' },
-  { name: 'MongoDB Associate Developer', issuer: 'MongoDB Inc', date: '2022', color: '#47A248', abbr: 'MDB' },
+const certifications = [
+  { name: 'AWS Solutions Architect', issuer: 'Amazon Web Services', abbr: 'AWS', year: '2024', icon: 'aws' },
+  { name: 'Certified Kubernetes Admin', issuer: 'CNCF', abbr: 'CKA', year: '2024', icon: 'k8s' },
+  { name: 'Google Cloud Professional', issuer: 'Google', abbr: 'GCP', year: '2024', icon: 'cloud' },
+  { name: 'Meta React Developer', issuer: 'Meta', abbr: 'META', year: '2023', icon: 'react' },
+  { name: 'MongoDB Associate Developer', issuer: 'MongoDB', abbr: 'MDB', year: '2023', icon: 'db' },
+  { name: 'GitHub Actions Certified', issuer: 'GitHub', abbr: 'GH', year: '2023', icon: 'git' },
 ];
+
+const CertIcon = ({ type }: { type: string }) => {
+  const baseProps = { width: 16, height: 16, stroke: 'currentColor', strokeWidth: 1.5, fill: 'none' };
+  const icons: Record<string, JSX.Element> = {
+    aws: <svg viewBox="0 0 24 24" {...baseProps}><path d="M6 9.5l6-3.5 6 3.5M12 21V13m0 0l-6-3.5m6 3.5l6-3.5" /></svg>,
+    k8s: <svg viewBox="0 0 24 24" {...baseProps}><circle cx="12" cy="12" r="3" /><path d="M12 2v4m0 12v4M2 12h4m12 0h4" /></svg>,
+    cloud: <svg viewBox="0 0 24 24" {...baseProps}><path d="M18 10h-1.26A8 8 0 109 20h9a5 5 0 000-10z" /></svg>,
+    react: <svg viewBox="0 0 24 24" {...baseProps}><circle cx="12" cy="12" r="8" /><path d="M8 12h8M12 8v8" /></svg>,
+    db: <svg viewBox="0 0 24 24" {...baseProps}><ellipse cx="12" cy="5" rx="8" ry="3" /><path d="M4 5v14c0 1.66 3.58 3 8 3s8-1.34 8-3V5" /></svg>,
+    git: <svg viewBox="0 0 24 24" {...baseProps}><circle cx="6" cy="6" r="2" /><circle cx="18" cy="18" r="2" /><path d="M6 8v8a2 2 0 002 2h8" /></svg>,
+  };
+  return <div className="text-[#E8A820]">{icons[type] || icons.aws}</div>;
+};
 
 const Certifications = () => {
   const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const ctx = gsap.context(() => {
-      gsap.from('.cert-card', {
-        x: 60, opacity: 0, stagger: 0.08, duration: 0.7, ease: 'power2.out', immediateRender: false,
-        scrollTrigger: { trigger: ref.current!, start: 'top 80%' }
+      gsap.from('.cert-cell', {
+        y: 20,
+        opacity: 0,
+        stagger: 0.06,
+        duration: 0.5,
+        ease: 'power2.out',
+        scrollTrigger: { trigger: ref.current, start: 'top 80%', once: true }
       });
     }, ref);
     return () => ctx.revert();
   }, []);
 
   return (
-    <section ref={ref} className="py-[100px]" style={{ background: '#0A0A0A' }}>
-      <div className="text-center mb-12">
-        <p className="font-mono text-[11px] uppercase tracking-[0.15em] text-gold">// Credentials</p>
-        <h2 className="font-playfair text-[48px] text-bone mt-2">Certifications</h2>
-      </div>
-      <div className="scrollbar-hidden flex gap-5 overflow-x-auto px-10 pb-4">
-        {certs.map(c => (
-          <div key={c.name} className="cert-card flex-shrink-0 w-[280px] rounded-[10px] border border-white/[0.07] p-6 hover:-translate-y-1 hover:border-crimson/35 transition-all duration-300" style={{ background: '#111' }}>
-            <div className="w-10 h-10 rounded-full flex items-center justify-center font-mono text-[11px] font-medium" style={{ background: `${c.color}22`, color: c.color, border: `1px solid ${c.color}44` }}>
-              {c.abbr}
-            </div>
-            <p className="font-playfair text-[18px] text-bone mt-4 leading-[1.3]">{c.name}</p>
-            <p className="font-mono text-[11px] text-gold mt-1.5">{c.issuer}</p>
-            <p className="font-mono text-[11px] text-bone/40">{c.date}</p>
-            <button className="font-mono text-[12px] text-crimson hover:underline mt-4">Verify →</button>
+    <section ref={ref} className="py-20 relative" style={{ background: '#0A0A0A' }}>
+      {/* Gradient fade at top - behind content */}
+      <div className="absolute top-0 left-0 right-0 h-16 pointer-events-none" style={{ background: 'linear-gradient(to bottom, #0A0A0A 0%, transparent 100%)' }} />
+
+      <div className="max-w-[720px] mx-auto px-6">
+        {/* Header */}
+        <div className="text-center pb-8 pt-2">
+          <p className="font-mono text-[10px] uppercase tracking-[0.22em] text-[#E8A820] mb-2">// Credentials</p>
+          <h2 className="font-playfair text-[38px] text-[#F5F0E8] font-medium tracking-[0.05em] leading-none m-0 max-sm:text-[30px]">Certifications</h2>
+          
+          <div className="flex items-center justify-center gap-2.5 mt-3.5">
+            <div className="w-10 h-px" style={{ background: 'linear-gradient(to right, transparent, #C41E3A)' }} />
+            <svg width="60" height="18" viewBox="0 0 60 18">
+              <g fill="none">
+                <path d="M30 2 C22 2 16 9 16 9 C16 9 22 16 30 16 C38 16 44 9 44 9 C44 9 38 2 30 2 Z" stroke="#E8A820" strokeWidth="0.8" opacity="0.5"/>
+                <path d="M30 5 C25 5 21 9 21 9 C21 9 25 13 30 13 C35 13 39 9 39 9 C39 9 35 5 30 5 Z" stroke="#E8A820" strokeWidth="0.6" opacity="0.35"/>
+                <circle cx="30" cy="9" r="2" fill="#E8A820" opacity="0.7"/>
+                <circle cx="9" cy="9" r="1.5" fill="#C41E3A" opacity="0.7"/>
+                <circle cx="51" cy="9" r="1.5" fill="#C41E3A" opacity="0.7"/>
+                <line x1="2" y1="9" x2="14" y2="9" stroke="#E8A820" strokeWidth="0.6" opacity="0.4"/>
+                <line x1="46" y1="9" x2="58" y2="9" stroke="#E8A820" strokeWidth="0.6" opacity="0.4"/>
+              </g>
+            </svg>
+            <div className="w-10 h-px" style={{ background: 'linear-gradient(to left, transparent, #C41E3A)' }} />
           </div>
-        ))}
+        </div>
+
+        {/* Lotus top ornament */}
+        <div className="flex items-center justify-center py-2 opacity-55">
+          <svg width="320" height="18" viewBox="0 0 320 18">
+            <g fill="none" stroke="#E8A820" strokeWidth="0.7" opacity="0.5">
+              <line x1="0" y1="9" x2="118" y2="9"/>
+              <path d="M130 9 C130 4 135 1 140 1 C145 1 150 4 150 9 C150 14 145 17 140 17 C135 17 130 14 130 9 Z"/>
+              <path d="M140 1 L140 17 M130 9 L150 9"/>
+              <path d="M120 9 C120 6 125 3 130 9"/>
+              <path d="M160 9 C160 6 155 3 150 9"/>
+              <circle cx="140" cy="9" r="2" fill="#E8A820"/>
+              <circle cx="120" cy="9" r="1" fill="#C41E3A"/>
+              <circle cx="160" cy="9" r="1" fill="#C41E3A"/>
+              <line x1="162" y1="9" x2="320" y2="9"/>
+            </g>
+          </svg>
+        </div>
+
+        {/* Grid (Dumbara Weave Section) */}
+        <div className="pb-12 h-full">
+          <div className="grid grid-cols-3 gap-[2px] rounded-[6px] overflow-hidden bg-[#F5F0E8]/[0.05] border border-[#F5F0E8]/[0.07] max-sm:grid-cols-2">
+            {certifications.map((cert, i) => (
+              <div
+                key={i}
+                className="cert-cell group relative flex items-start gap-3 py-4 px-3.5 bg-[#0e0e0e] hover:bg-[#161616] transition-colors duration-250 cursor-default"
+              >
+                <div className="absolute top-0 left-0 w-[3px] h-full bg-transparent group-hover:bg-[#C41E3A] transition-colors duration-250" />
+                
+                <div className="flex-shrink-0 w-[30px] h-[30px] rounded bg-[#E8A820]/15 flex items-center justify-center">
+                  <CertIcon type={cert.icon} />
+                </div>
+                
+                <div className="flex-1 min-w-0">
+                  <p className="font-playfair text-[13px] font-medium text-[#F5F0E8] leading-[1.3]">{cert.name}</p>
+                  <div className="flex items-center gap-1.5 mt-[3px]">
+                    <span className="font-mono text-[10px] text-[#E8A820]">{cert.abbr}</span>
+                    <span className="text-[#F5F0E8]/15 text-[10px]">·</span>
+                    <span className="font-mono text-[10px] text-[#F5F0E8]/30">{cert.year}</span>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
       </div>
+
+      {/* Bottom temple border */}
+      <div className="max-w-[720px] mx-auto px-6 pb-8 relative z-10 w-full overflow-hidden flex justify-center opacity-30">
+        <svg width="672" height="24" viewBox="0 0 672 24" preserveAspectRatio="xMidYMid meet">
+          <g fill="none" stroke="#E8A820" strokeWidth="0.8">
+            <line x1="0" y1="12" x2="672" y2="12"/>
+            <rect x="312" y="6" width="12" height="12" rx="1" transform="rotate(45 318 12)"/>
+            <rect x="296" y="9" width="6" height="6" rx="0.5" transform="rotate(45 299 12)"/>
+            <rect x="326" y="9" width="6" height="6" rx="0.5" transform="rotate(45 329 12)"/>
+            <circle cx="318" cy="12" r="2" fill="#E8A820" opacity="0.4"/>
+          </g>
+        </svg>
+      </div>
+
+      {/* Gradient fade at bottom - behind content */}
+      <div className="absolute bottom-0 left-0 right-0 h-16 pointer-events-none" style={{ background: 'linear-gradient(to top, #0A0A0A 0%, transparent 100%)' }} />
     </section>
   );
 };
