@@ -44,7 +44,7 @@ const Projects = () => {
   }, []);
 
   return (
-    <section id="projects" ref={ref} className="py-[120px]" style={{ background: '#0A0A0A' }}>
+    <section id="projects" ref={ref} className="py-[100px] mt-[-60px] relative z-20" style={{ background: '#0A0A0A' }}>
       <div className="text-center mb-16">
         <p className="font-mono text-[11px] uppercase tracking-[0.15em] text-gold">// Featured Work</p>
         <h2 className="font-playfair text-[48px] text-bone mt-2">Selected Work</h2>
@@ -54,9 +54,22 @@ const Projects = () => {
       <div className="max-w-[1200px] mx-auto px-10">
         {/* Hero card */}
         <div className="project-card rounded-xl border border-white/[0.07] overflow-hidden hover:border-crimson/40 hover:-translate-y-[3px] transition-all duration-300" style={{ background: '#111' }}>
-          <div className="h-[280px] overflow-hidden" style={{ background: '#0D0D0D' }}>
-            <div className="w-full h-full flex items-center justify-center font-mono text-[13px] text-bone/20">
+          <div className="h-[280px] overflow-hidden relative" style={{ 
+            background: 'linear-gradient(135deg, #161616 0%, #1a0a0a 50%, #0f0f1a 100%)',
+          }}>
+            <div 
+              className="absolute inset-0 opacity-10 pointer-events-none" 
+              style={{ 
+                backgroundImage: 'linear-gradient(rgba(192,39,45,0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(192,39,45,0.1) 1px, transparent 1px)',
+                backgroundSize: '24px 24px'
+              }} 
+            />
+            <div className="absolute top-0 left-0 w-0 h-[2px] bg-crimson hover-line transition-all duration-500" />
+            <div className="w-full h-full flex items-center justify-center font-mono text-[13px] text-bone/20 z-10">
               [ Project Screenshot ]
+            </div>
+            <div className="absolute bottom-4 right-6 font-playfair text-[80px] font-black text-crimson/[0.06] leading-none select-none">
+              01
             </div>
           </div>
           <div className="p-7 flex justify-between items-start">
@@ -86,8 +99,8 @@ const Projects = () => {
               <span className="font-mono text-[11px] text-bone/40">4 projects</span>
             </div>
             <div className="grid grid-cols-2 gap-3 mt-4">
-              {microProjects.map(p => (
-                <div key={p.name} className="rounded-lg border border-white/[0.06] p-[14px] cursor-pointer hover:border-crimson/35 hover:bg-crimson/[0.04] transition-all" style={{ background: '#0D0D0D' }}>
+              {microProjects.map((p, idx) => (
+                <div key={p.name} className="group/tile rounded-lg border border-white/[0.06] p-[14px] cursor-pointer hover:border-crimson/35 hover:bg-crimson/[0.04] transition-all min-h-[110px] flex flex-col justify-between" style={{ background: '#0D0D0D' }}>
                   <p className="font-mono text-[13px] text-bone font-medium">{p.name}</p>
                   <p className="font-mono text-[11px] text-crimson">{p.tech}</p>
                   <p className="font-sans text-[13px] text-bone/40 mt-1">{p.desc}</p>
@@ -105,9 +118,22 @@ const Projects = () => {
 
           {/* Side project card */}
           <div className="project-card rounded-xl border border-white/[0.07] overflow-hidden hover:border-crimson/40 hover:-translate-y-[3px] transition-all duration-300" style={{ background: '#111' }}>
-            <div className="h-[180px] overflow-hidden" style={{ background: '#0D0D0D' }}>
-              <div className="w-full h-full flex items-center justify-center font-mono text-[13px] text-bone/20">
+            <div className="h-[180px] overflow-hidden relative" style={{ 
+              background: 'linear-gradient(135deg, #161616 0%, #1a0a0a 50%, #0f0f1a 100%)' 
+            }}>
+              <div 
+                className="absolute inset-0 opacity-10 pointer-events-none" 
+                style={{ 
+                  backgroundImage: 'linear-gradient(rgba(192,39,45,0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(192,39,45,0.1) 1px, transparent 1px)',
+                  backgroundSize: '24px 24px'
+                }} 
+              />
+              <div className="absolute top-0 left-0 w-0 h-[2px] bg-crimson hover-line transition-all duration-500" />
+              <div className="w-full h-full flex items-center justify-center font-mono text-[13px] text-bone/20 z-10">
                 [ Project Screenshot ]
+              </div>
+              <div className="absolute bottom-2 right-4 font-playfair text-[60px] font-black text-crimson/[0.06] leading-none select-none">
+                02
               </div>
             </div>
             <div className="p-5">
@@ -139,5 +165,14 @@ const Projects = () => {
     </section>
   );
 };
+
+/* CSS for hover line animation */
+const style = document.createElement('style');
+style.textContent = `
+  .project-card:hover .hover-line {
+    width: 100% !important;
+  }
+`;
+if (typeof document !== 'undefined') document.head.appendChild(style);
 
 export default Projects;

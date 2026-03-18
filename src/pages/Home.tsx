@@ -7,6 +7,7 @@ import Experience from '@/components/Experience';
 import About from '@/components/About';
 import Certifications from '@/components/Certifications';
 import Achievements from '@/components/Achievements';
+import ImpactMetrics from '@/components/ImpactMetrics';
 import CodeCadence from '@/components/CodeCadence';
 import Contact from '@/components/Contact';
 import Footer from '@/components/Footer';
@@ -22,6 +23,7 @@ const Home = () => (
     <About />
     <Certifications />
     <Achievements />
+    <ImpactMetrics />
     <CodeCadence />
     <Contact />
     <Footer />

@@ -150,18 +150,18 @@ const TechGraph = () => {
     function layout() {
       const rows=[2,3,4,3], gap=14, maxCols=4;
       S = Math.min(
-        W / (maxCols*Math.sqrt(3) + (maxCols+1)*0.3 + 2),
-        H / (rows.length*1.5+1)
-      ) * 0.9;
-      const hw=S*Math.sqrt(3), vstep=S*1.5;
+        W / (maxCols*Math.sqrt(3) + (maxCols+1)*0.4 + 2),
+        H / (rows.length*1.6+1)
+      ) * 1.15; // Increased scale factor
+      const hw=S*Math.sqrt(3), vstep=S*1.65, rowGap = 20; // Increased vertical step and gap
       const totalH=vstep*(rows.length-1)+S*2;
       const y0=(H-totalH)/2+S;
       pos=[];
       rows.forEach((cnt,r)=>{
-        const rowW=cnt*hw+(cnt-1)*gap;
+        const rowW=cnt*hw+(cnt-1)*rowGap;
         const x0=(W-rowW)/2+hw/2;
         const y=y0+r*vstep;
-        for(let c=0;c<cnt;c++) pos.push({x:x0+c*(hw+gap),y});
+        for(let c=0;c<cnt;c++) pos.push({x:x0+c*(hw+rowGap),y});
       });
     }
 
