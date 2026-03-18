@@ -9,7 +9,7 @@ const Hero = () => {
 
   useEffect(() => {
     const ctx = gsap.context(() => {
-      gsap.from(dancerRef.current!, { x: 180, opacity: 0, duration: 1.4, ease: 'power3.out', delay: 0.5 });
+      gsap.from(dancerRef.current!, { x: -180, opacity: 0, duration: 1.4, ease: 'power3.out', delay: 0.5 });
       gsap.from('.hero-text-anim', { y: 40, opacity: 0, stagger: 0.12, duration: 0.9, ease: 'power2.out', delay: 0.2 });
 
       ScrollTrigger.create({
@@ -19,7 +19,7 @@ const Hero = () => {
         scrub: 1.5,
         onUpdate: (self) => {
           const p = self.progress;
-          gsap.set(dancerRef.current!, { x: p * 250, opacity: 1 - p });
+          gsap.set(dancerRef.current!, { x: -p * 250, opacity: 1 - p });
         }
       });
     }, heroRef);
@@ -36,8 +36,8 @@ const Hero = () => {
         <circle cx="58" cy="45" r="2" fill="#E8A820" opacity="0.5" />
       </svg>
 
-      {/* Left content */}
-      <div className="relative z-10 h-full flex flex-col justify-start" style={{ width: '55%', paddingLeft: 'max(60px, 6vw)', paddingTop: '18vh' }}>
+      {/* Right content (swapped from left) */}
+      <div className="relative z-10 h-full flex flex-col justify-start ml-auto" style={{ width: '55%', paddingRight: 'max(60px, 6vw)', paddingTop: '18vh' }}>
         <p className="hero-text-anim font-mono text-[11px] uppercase tracking-[0.15em] text-gold">
           // Senior Software Engineer<span style={{ animation: 'blink 0.8s infinite' }}>|</span>
         </p>
@@ -77,13 +77,13 @@ const Hero = () => {
         </div>
       </div>
 
-      {/* Right dancer */}
+      {/* Left dancer (swapped from right) */}
       <img
         ref={dancerRef}
         src={dancerImg}
         alt="Dancer"
-        className="absolute right-[-60px] bottom-0 h-[92vh] w-auto object-contain"
-        style={{ mixBlendMode: 'screen', filter: 'drop-shadow(-40px 0px 70px rgba(192,39,45,0.4))' }}
+        className="absolute left-0 bottom-0 h-[92vh] w-auto object-contain"
+        style={{ mixBlendMode: 'screen', filter: 'drop-shadow(40px 0px 70px rgba(192,39,45,0.4))' }}
       />
     </section>
   );
