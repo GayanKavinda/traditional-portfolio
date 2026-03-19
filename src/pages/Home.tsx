@@ -2,7 +2,7 @@ import Navbar from '@/components/Navbar';
 import Hero from '@/components/Hero';
 import MaskTransition from '@/components/MaskTransition';
 import Projects from '@/components/Projects';
-import TechStack from '@/components/TechStack';
+import TechStack from '@/components/TechStack/index';
 import Experience from '@/components/Experience';
 import About from '@/components/About';
 import Certifications from '@/components/Certifications';

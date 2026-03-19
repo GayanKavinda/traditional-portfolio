@@ -85,6 +85,12 @@ const Hero = () => {
         className="absolute left-0 bottom-0 h-[92vh] w-auto object-contain"
         style={{ mixBlendMode: 'screen', filter: 'drop-shadow(40px 0px 70px rgba(192,39,45,0.4))' }}
       />
+
+      {/* Bottom fade for smooth section transition */}
+      <div 
+        className="absolute bottom-0 left-0 right-0 h-32 pointer-events-none z-10"
+        style={{ background: 'linear-gradient(to top, #0A0A0A, transparent)' }}
+      />
     </section>
   );
 };

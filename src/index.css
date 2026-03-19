@@ -177,3 +177,14 @@ html {
   background: hsl(var(--crimson) / 0.3);
   color: hsl(var(--bone));
 }
+/* Cinematic marquee */
+@keyframes mqCinema {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+
+/* HUD side word cycling animation */
+@keyframes hudWordCycle {
+  0%, 24%  { color: rgba(232,168,32,0.7); }
+  25%, 100% { color: rgba(245,240,232,0.14); }
+}
