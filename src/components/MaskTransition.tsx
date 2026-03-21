@@ -5,6 +5,13 @@ import maskImg from '@/assets/mask.png';
 
 gsap.registerPlugin(ScrollTrigger);
 
+const DISCIPLINES = ['ENGINEER', 'ARCHITECT', 'BUILDER', 'CREATOR'];
+
+const HUD_CONFIG = {
+  title: "GARA YAKA // SYSTEMS ARCHITECT",
+  scrollLabel: "SCROLL TO EXPLORE ↓"
+};
+
 const prefersReducedMotion = () =>
   typeof window !== 'undefined' &&
   window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -45,13 +52,8 @@ const MaskTransition = () => {
         0
       );
 
-      // Marquee: slows down as mask appears (parallax feel)
-      tl.fromTo(
-        marqueeRef.current,
-        { x: '0%' },
-        { x: '-8%', ease: 'none' },
-        0
-      );
+      // Marquee: parallax feel (optional, but removed to avoid conflict with infinite CSS animation)
+      // If needed, apply this to a wrapper div instead.
 
       // Progress bar fills as you scroll
       tl.fromTo(
@@ -64,25 +66,11 @@ const MaskTransition = () => {
     return () => ctx.revert();
   }, []);
 
-  // Word cycling for side words
-  useEffect(() => {
-    const words = document.querySelectorAll('.hud-side-word');
-    if (!words.length) return;
-    let i = 0;
-    const interval = setInterval(() => {
-      words.forEach((w) => {
-        (w as HTMLElement).style.color = 'rgba(245,240,232,0.14)';
-      });
-      i = (i + 1) % words.length;
-      (words[i] as HTMLElement).style.color = 'rgba(232,168,32,0.7)';
-    }, 1600);
-    return () => clearInterval(interval);
-  }, []);
 
-  const words = ['ENGINEER', 'ARCHITECT', 'BUILDER', 'CREATOR'];
-  const marqueeContent = [...words, ...words, ...words, ...words].map(
-    (w, i) => ({ word: w, filled: i % 2 === 1 })
-  );
+  const marqueeContent = [...DISCIPLINES, ...DISCIPLINES].map((w, i) => ({
+    word: w,
+    filled: i % 2 === 1,
+  }));
 
   return (
     <div ref={outerRef} style={{ height: '220vh', position: 'relative' }}>
@@ -201,10 +189,7 @@ const MaskTransition = () => {
           }}
         >
           <span style={{ color: 'rgba(232,168,32,0.5)' }}>
-            ENGINEER · ARCHITECT · BUILDER · CREATOR
-          </span>
-          <span style={{ color: 'rgba(245,240,232,0.25)' }}>
-            10+ YRS · 50+ PROJECTS · 10M+ USERS
+            {HUD_CONFIG.title}
           </span>
         </div>
 
@@ -216,7 +201,7 @@ const MaskTransition = () => {
             left: 40,
             right: 40,
             display: 'flex',
-            justifyContent: 'space-between',
+            justifyContent: 'flex-end',
             zIndex: 15,
             fontFamily: "'Space Mono', monospace",
             fontSize: '0.65rem',
@@ -224,11 +209,8 @@ const MaskTransition = () => {
             textTransform: 'uppercase',
           }}
         >
-          <span style={{ color: 'rgba(245,240,232,0.25)' }}>
-            COLOMBO, SL — REMOTE WORLDWIDE
-          </span>
           <span style={{ color: 'rgba(232,168,32,0.4)' }}>
-            SCROLL TO EXPLORE ↓
+            {HUD_CONFIG.scrollLabel}
           </span>
         </div>
 
@@ -255,63 +237,6 @@ const MaskTransition = () => {
           />
         </div>
 
-        {/* LEFT SIDE WORDS */}
-        <div
-          style={{
-            position: 'absolute',
-            left: 40,
-            top: '50%',
-            transform: 'translateY(-50%)',
-            zIndex: 15,
-            display: 'flex',
-            flexDirection: 'column',
-            gap: '0.5rem',
-            fontFamily: "'Space Mono', monospace",
-            fontSize: '0.6rem',
-            letterSpacing: '0.2em',
-            textTransform: 'uppercase',
-          }}
-        >
-          {['ENGINEER', 'ARCHITECT', 'BUILDER', 'CREATOR'].map((w, i) => (
-            <span
-              key={w}
-              className="hud-side-word"
-              style={{
-                color:
-                  i === 0
-                    ? 'rgba(232,168,32,0.7)'
-                    : 'rgba(245,240,232,0.14)',
-                transition: 'color 0.4s ease',
-              }}
-            >
-              {w}
-            </span>
-          ))}
-        </div>
-
-        {/* RIGHT SIDE WORDS */}
-        <div
-          style={{
-            position: 'absolute',
-            right: 40,
-            top: '50%',
-            transform: 'translateY(-50%)',
-            zIndex: 15,
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'flex-end',
-            gap: '0.5rem',
-            fontFamily: "'Space Mono', monospace",
-            fontSize: '0.6rem',
-            letterSpacing: '0.2em',
-            textTransform: 'uppercase',
-            color: 'rgba(245,240,232,0.14)',
-          }}
-        >
-          {['SRI LANKA', 'REMOTE', 'GLOBAL'].map((w) => (
-            <span key={w}>{w}</span>
-          ))}
-        </div>
 
         {/* CORNER BRACKETS */}
         {[

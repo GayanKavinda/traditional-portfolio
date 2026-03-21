@@ -1,3 +1,5 @@
+/* index.css */
+
 @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=DM+Mono:wght@400;500&family=Instrument+Sans:wght@400;500&display=swap');
 
 @tailwind base;
@@ -187,4 +189,10 @@ html {
 @keyframes hudWordCycle {
   0%, 24%  { color: rgba(232,168,32,0.7); }
   25%, 100% { color: rgba(245,240,232,0.14); }
+}
+
+/* Scanline animation for HUD menu */
+@keyframes scanline {
+  0% { transform: translateY(-100vh); }
+  100% { transform: translateY(100vh); }
 }
