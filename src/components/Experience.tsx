@@ -2,6 +2,7 @@ import { useEffect, useRef } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import crowdImg from '@/assets/crowd.png';
+import { useTheme } from '@/context/ThemeProvider';
 
 // UI/UX Pro Max recommended easing
 const EASING = 'cubic-bezier(0.16, 1, 0.3, 1)';
@@ -36,6 +37,8 @@ const entries: Entry[] = [
 
 const Experience = () => {
   const sectionRef = useRef<HTMLDivElement>(null);
+  const { theme } = useTheme();
+  const isDark = theme === 'dark';
   const entryRefs = useRef<(HTMLDivElement | null)[]>([]);
 
   useEffect(() => {
@@ -57,12 +60,12 @@ const Experience = () => {
 
   return (
     <section id="experience" ref={sectionRef} className="py-[120px] relative overflow-hidden">
-      <img src={crowdImg} alt="" className="absolute inset-0 w-full h-full object-cover opacity-[0.05] pointer-events-none z-0" style={{ mixBlendMode: 'multiply' }} />
-      <div className="absolute inset-0 z-[1]" style={{ background: 'rgba(10,10,10,0.92)' }} />
+      <img src={crowdImg} alt="" className="absolute inset-0 w-full h-full object-cover opacity-[0.05] pointer-events-none z-0" style={{ mixBlendMode: isDark ? 'screen' : 'multiply' }} />
+      <div className="absolute inset-0 z-[1]" style={{ background: 'hsl(var(--background) / 0.92)' }} />
 
       <div className="relative z-[2] text-center mb-16">
         <p className="font-mono text-[11px] uppercase tracking-[0.15em] text-gold">// Career</p>
-        <h2 className="font-playfair text-[48px] text-bone mt-2">Experience</h2>
+        <h2 className="font-playfair text-[48px] text-foreground mt-2">Experience</h2>
       </div>
 
       <div className="relative z-[2] max-w-[900px] mx-auto px-10">
@@ -79,17 +82,17 @@ const Experience = () => {
 
               <div className={`w-[44%] ${isLeft ? 'mr-auto pr-10 text-right' : 'ml-auto pl-10'}`}>
                 <div
-                  className={`rounded-lg border border-white/[0.07] p-5 group transition-all duration-300 hover:scale-[1.02] ${
+                  className={`rounded-lg border border-border p-5 group transition-all duration-300 hover:scale-[1.02] ${
                     e.current ? 'border-l-[3px] border-l-crimson border-crimson/35' : ''
                   }`}
-                  style={{ background: '#111' }}
+                  style={{ background: 'hsl(var(--card))' }}
                 >
                   <p className="font-mono text-[13px] text-gold">{e.company}</p>
-                  <p className="font-playfair text-[18px] text-bone mt-1">{e.role}</p>
-                  <p className="font-mono text-[11px] text-bone/40">{e.period}</p>
+                  <p className="font-playfair text-[18px] text-foreground mt-1">{e.role}</p>
+                  <p className="font-mono text-[11px] text-foreground/40">{e.period}</p>
                   <ul className="mt-3 space-y-1.5">
                     {e.bullets.map((b, j) => (
-                      <li key={j} className={`font-sans text-[14px] text-bone/65 ${isLeft ? 'text-right' : 'text-left'}`}>
+                      <li key={j} className={`font-sans text-[14px] text-foreground/65 ${isLeft ? 'text-right' : 'text-left'}`}>
                         <span className="text-crimson mr-1.5">›</span>{b}
                       </li>
                     ))}

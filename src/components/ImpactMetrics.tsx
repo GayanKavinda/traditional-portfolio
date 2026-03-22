@@ -1,6 +1,7 @@
 import { useEffect, useRef } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { useTheme } from '@/context/ThemeProvider';
 
 const metrics = [
   { value: '10M+', label: 'users served' },
@@ -12,6 +13,8 @@ const metrics = [
 const ImpactMetrics = () => {
   const sectionRef = useRef<HTMLDivElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
+  const { theme } = useTheme();
+  const isDark = theme === 'dark';
 
   useEffect(() => {
     const ctx = gsap.context(() => {
@@ -62,7 +65,7 @@ const ImpactMetrics = () => {
   }, []);
 
   return (
-    <section ref={sectionRef} className="py-20 border-y border-white/[0.05]" style={{ background: '#080808' }}>
+    <section ref={sectionRef} className="py-20 border-y border-border bg-background">
       <div ref={containerRef} className="max-w-[1100px] mx-auto px-6">
         <div className="flex flex-wrap md:flex-nowrap justify-between items-center gap-8 md:gap-0">
           {metrics.map((m, i) => (
@@ -70,7 +73,7 @@ const ImpactMetrics = () => {
               <span className="stat-value font-playfair text-[56px] font-bold text-gold leading-tight">
                 {m.value}
               </span>
-              <span className="font-sans text-[14px] text-bone/50 uppercase tracking-widest mt-1">
+              <span className="font-sans text-[14px] text-foreground/50 uppercase tracking-widest mt-1">
                 {m.label}
               </span>
               

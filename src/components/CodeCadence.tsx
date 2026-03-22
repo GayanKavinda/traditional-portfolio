@@ -3,6 +3,7 @@ import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useQuery } from '@tanstack/react-query';
 import aftermathImg from '@/assets/aftermath.png';
+import { useTheme } from '@/context/ThemeProvider';
 
 const GITHUB_USERNAME = 'GayanKavinda';
 
@@ -135,12 +136,12 @@ const fetchGithubData = async (): Promise<GithubStats> => {
   };
 };
 
-const getColor = (n: number) => {
-  if (n === 0) return 'rgba(255,255,255,0.06)';
-  if (n <= 3) return 'rgba(192,39,45,0.4)';
-  if (n <= 8) return 'rgba(212,175,55,0.7)';
-  if (n <= 15) return 'rgba(192,39,45,0.85)';
-  return 'rgba(212,175,55,1)';
+const getColor = (n: number, isDark: boolean) => {
+  if (n === 0) return isDark ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.06)';
+  if (n <= 3) return isDark ? 'rgba(192,39,45,0.4)' : 'rgba(192,39,45,0.2)';
+  if (n <= 8) return isDark ? 'rgba(212,175,55,0.7)' : 'rgba(212,175,55,0.5)';
+  if (n <= 15) return isDark ? 'rgba(192,39,45,0.85)' : 'rgba(192,39,45,0.7)';
+  return isDark ? 'rgba(212,175,55,1)' : 'rgba(212,175,55,0.9)';
 };
 
 const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
@@ -152,6 +153,8 @@ const CodeCadence = () => {
   const heatmapRef = useRef<SVGSVGElement>(null);
   const statsRef = useRef<HTMLDivElement>(null);
   const [tooltip, setTooltip] = useState<{ x: number; y: number; title: string; subtitle: string } | null>(null);
+  const { theme } = useTheme();
+  const isDark = theme === 'dark';
 
   const { data: githubStats, isLoading, error } = useQuery({
     queryKey: ['githubStats'],
@@ -276,20 +279,21 @@ const CodeCadence = () => {
         src={aftermathImg}
         alt=""
         className="absolute inset-0 w-full h-full object-cover opacity-[0.04] pointer-events-none z-0"
+        style={{ mixBlendMode: isDark ? 'screen' : 'multiply' }}
       />
-      <div className="absolute inset-0 z-[1]" style={{ background: 'rgba(10,10,10,0.93)' }} />
+      <div className="absolute inset-0 z-[1]" style={{ background: 'hsl(var(--background) / 0.93)' }} />
 
       <div className="relative z-[2] max-w-[1100px] mx-auto px-10">
         <div className="text-center">
           <p className="font-mono text-[11px] uppercase tracking-[0.15em] text-gold">// Real-time Activity</p>
-          <h2 className="font-playfair text-[48px] text-bone mt-2">Code Cadence</h2>
+          <h2 className="font-playfair text-[48px] text-foreground mt-2">Code Cadence</h2>
           <div className="w-[60px] h-[2px] bg-crimson mx-auto mt-4" />
         </div>
 
         <div className="grid grid-cols-[1fr_240px] gap-[60px] mt-14 max-lg:grid-cols-1">
           <div className={isLoading ? "opacity-50 pointer-events-none" : ""}>
             <div className="flex justify-between items-center mb-3">
-              <span className="font-mono text-[11px]" style={{ color: 'rgba(245,240,232,0.35)' }}>
+              <span className="font-mono text-[11px] text-foreground/35">
                 Past 12 months
               </span>
               <span className="font-mono text-[11px] text-gold">
@@ -308,7 +312,7 @@ const CodeCadence = () => {
                     key={`${m.label}-${i}`}
                     x={40 + m.col * (cellSize + gap)}
                     y={10}
-                    fill="rgba(245,240,232,0.35)"
+                    fill={isDark ? "rgba(245,240,232,0.35)" : "rgba(26,26,46,0.35)"}
                     fontSize="9"
                     fontFamily='"DM Mono", monospace'
                   >
@@ -320,7 +324,7 @@ const CodeCadence = () => {
                     key={d}
                     x={0}
                     y={20 + (i * 2 + 1) * (cellSize + gap) + cellSize / 2 + 3}
-                    fill="rgba(245,240,232,0.35)"
+                    fill={isDark ? "rgba(245,240,232,0.35)" : "rgba(26,26,46,0.35)"}
                     fontSize="9"
                     fontFamily='"DM Mono", monospace'
                   >
@@ -337,7 +341,7 @@ const CodeCadence = () => {
                         width={cellSize}
                         height={cellSize}
                         rx={1.5}
-                        fill={getColor(day.contributionCount)}
+                        fill={getColor(day.contributionCount, isDark)}
                         className="cursor-pointer transition-all duration-200 hover:stroke-gold/50 hover:stroke-2"
                         onMouseEnter={(e) => {
                           const rect = e.currentTarget.getBoundingClientRect();
@@ -356,12 +360,12 @@ const CodeCadence = () => {
               </svg>
               {tooltip && (
                 <div
-                  className="fixed translate-x-[-50%] translate-y-[-100%] mb-4 rounded-[6px] border border-white/[0.1] px-3 py-2 font-mono text-[11px] z-50 pointer-events-none flex flex-col items-center gap-0.5"
-                  style={{ left: tooltip.x, top: tooltip.y, background: '#1A1A1A', boxShadow: '0 10px 20px rgba(0,0,0,0.4)' }}
+                  className="fixed translate-x-[-50%] translate-y-[-100%] mb-4 rounded-[6px] border border-border px-3 py-2 font-mono text-[11px] z-50 pointer-events-none flex flex-col items-center gap-0.5 bg-card shadow-xl"
+                  style={{ left: tooltip.x, top: tooltip.y }}
                 >
-                  <span className="text-bone whitespace-nowrap">{tooltip.title}</span>
-                  <span className="text-bone/40 text-[9px] uppercase tracking-tighter">{tooltip.subtitle}</span>
-                  <div className="absolute bottom-[-5px] left-1/2 translate-x-[-50%] w-2 h-2 rotate-45 border-r border-b border-white/[0.1]" style={{ background: '#1A1A1A' }} />
+                  <span className="text-foreground whitespace-nowrap">{tooltip.title}</span>
+                  <span className="text-foreground/40 text-[9px] uppercase tracking-tighter">{tooltip.subtitle}</span>
+                  <div className="absolute bottom-[-5px] left-1/2 translate-x-[-50%] w-2 h-2 rotate-45 border-r border-b border-border bg-card" />
                 </div>
               )}
             </div>
@@ -375,11 +379,10 @@ const CodeCadence = () => {
                 ].map((s) => (
                   <div
                     key={s.label}
-                    className="stat-card rounded-[8px] border border-white/[0.07] p-3 text-center"
-                    style={{ background: '#111' }}
+                    className="stat-card rounded-[8px] border border-border p-3 text-center bg-card"
                   >
                     <p className="font-playfair text-[24px] text-gold">{s.num}</p>
-                    <p className="font-mono text-[9px] uppercase tracking-wider mt-1" style={{ color: 'rgba(245,240,232,0.4)' }}>
+                    <p className="font-mono text-[9px] uppercase tracking-wider mt-1 text-foreground/40">
                       {s.label}
                     </p>
                   </div>
@@ -387,7 +390,7 @@ const CodeCadence = () => {
               </div>
 
               <div className="activity-feed">
-                <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-bone/30 mb-4 ml-1">
+                <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-foreground/30 mb-4 ml-1">
                   // Recent Activity
                 </p>
                 <div className="space-y-4">
@@ -401,10 +404,10 @@ const CodeCadence = () => {
                     >
                       <div className="w-1.5 h-1.5 rounded-full bg-crimson mt-1.5 shrink-0 shadow-[0_0_8px_rgba(192,39,45,0.6)] group-hover:scale-125 transition-transform" />
                       <div>
-                        <p className="font-sans text-[13px] text-bone/80 group-hover:text-bone transition-colors leading-tight">
-                          {e.message} <span className="text-crimson/80 group-hover:text-crimson">in</span> <span className="text-bone font-mono text-[12px] group-hover:text-gold">{e.repo}</span>
+                        <p className="font-sans text-[13px] text-foreground/80 group-hover:text-foreground transition-colors leading-tight">
+                          {e.message} <span className="text-crimson/80 group-hover:text-crimson">in</span> <span className="text-foreground font-mono text-[12px] group-hover:text-gold">{e.repo}</span>
                         </p>
-                        <p className="font-mono text-[10px] text-bone/30 mt-1">{e.time}</p>
+                        <p className="font-mono text-[10px] text-foreground/30 mt-1">{e.time}</p>
                       </div>
                     </a>
                   ))}
@@ -413,7 +416,7 @@ const CodeCadence = () => {
             </div>
           </div>
 
-          <div className="flex-shrink-0 max-lg:w-full max-lg:mt-8 border-l border-white/[0.06] pl-10 max-lg:border-l-0 max-lg:pl-0">
+          <div className="flex-shrink-0 max-lg:w-full max-lg:mt-8 border-l border-border pl-10 max-lg:border-l-0 max-lg:pl-0">
             <p className="font-mono text-[11px] uppercase tracking-[0.15em] text-gold mb-8">
               // Languages
             </p>
@@ -422,12 +425,11 @@ const CodeCadence = () => {
               {githubStats?.languages.map((l) => (
                 <div key={l.name} className="mb-6">
                   <div className="flex justify-between items-end">
-                    <span className="font-mono text-[13px] text-bone">{l.name}</span>
+                    <span className="font-mono text-[13px] text-foreground">{l.name}</span>
                     <span className="font-mono text-[11px] text-gold opacity-60">{l.pct}%</span>
                   </div>
                   <div
-                    className="mt-2.5 h-[3px] rounded-full overflow-hidden"
-                    style={{ background: 'rgba(255,255,255,0.05)' }}
+                    className="mt-2.5 h-[3px] rounded-full overflow-hidden bg-foreground/5"
                   >
                     <div
                       className="lang-bar-fill h-full rounded-full bg-crimson shadow-[0_0_10px_rgba(192,39,45,0.3)]"
@@ -438,7 +440,7 @@ const CodeCadence = () => {
               ))}
             </div>
 
-            <div className="border-t border-white/[0.06] mt-10 pt-8">
+            <div className="border-t border-border mt-10 pt-8">
               <a
                 href={`https://github.com/${GITHUB_USERNAME}`}
                 target="_blank"

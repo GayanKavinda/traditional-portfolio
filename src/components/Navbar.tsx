@@ -1,5 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
+import { ModeToggle } from './ThemeToggle';
+import { useTheme } from '@/context/ThemeProvider';
 
 const navLinks = [
   { label: 'Home',       id: 'home',       sub: 'Start here',       icon: (c:string) => <svg viewBox="0 0 24 24" fill="none" stroke={c} strokeWidth="1.5" strokeLinecap="round"><path d="M3 9.5L12 3l9 6.5V20a1 1 0 01-1 1H4a1 1 0 01-1-1V9.5z"/><path d="M9 21V12h6v9"/></svg> },
@@ -10,13 +12,11 @@ const navLinks = [
   { label: 'Contact',    id: 'contact',    sub: "Let's build",      icon: (c:string) => <svg viewBox="0 0 24 24" fill="none" stroke={c} strokeWidth="1.5" strokeLinecap="round"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg> },
 ];
 
-const iconColors = ['#C0272D','#E8A820','#4F8EF7','#34C98A','#A78BFA','#E8A820'];
-const iconBgs    = ['rgba(192,39,45,0.12)','rgba(232,168,32,0.1)','rgba(79,142,247,0.1)','rgba(52,201,138,0.1)','rgba(167,139,250,0.1)','rgba(232,168,32,0.1)'];
-const iconBords  = ['rgba(192,39,45,0.2)','rgba(232,168,32,0.16)','rgba(79,142,247,0.16)','rgba(52,201,138,0.16)','rgba(167,139,250,0.16)','rgba(232,168,32,0.16)'];
-
 const Navbar = () => {
   const [scrolled, setScrolled]   = useState(false);
   const [menuOpen, setMenuOpen]   = useState(false);
+  const { theme } = useTheme();
+  const isDark = theme === 'dark';
   const navigate  = useNavigate();
   const location  = useLocation();
 
@@ -47,15 +47,22 @@ const Navbar = () => {
     }
   };
 
-  // ─── Shared style tokens ───────────────────────────────────────────────────
+  // ─── Theme-aware style tokens ─────────────────────────────────────────────
   const pillBase: React.CSSProperties = {
     display: 'flex', alignItems: 'center',
-    background: 'rgba(8,8,8,0.85)',
-    border: '1px solid rgba(255,255,255,0.09)',
+    background: isDark ? 'rgba(17,17,17,0.90)' : 'rgba(255,255,255,0.90)',
+    border: isDark ? '1px solid rgba(255,255,255,0.09)' : '1px solid rgba(0,0,0,0.09)',
     borderRadius: 50,
     backdropFilter: 'blur(24px)',
     WebkitBackdropFilter: 'blur(24px)',
+    boxShadow: isDark ? '0 2px 20px rgba(0,0,0,0.4)' : '0 2px 20px rgba(0,0,0,0.08)',
   };
+  const textMuted = isDark ? 'rgba(245,240,232,0.45)' : 'rgba(26,26,46,0.45)';
+  const textActive = isDark ? 'rgba(245,240,232,0.9)' : '#1a1a2e';
+  const scrolledBg = isDark ? 'rgba(10,10,10,0.97)' : 'rgba(250,250,250,0.97)';
+  const scrolledBorder = isDark ? 'rgba(255,255,255,0.07)' : 'rgba(0,0,0,0.07)';
+  const dropdownBg = isDark ? 'rgba(17,17,17,0.98)' : 'rgba(250,250,250,0.98)';
+  const dividerColor = isDark ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.08)';
 
   return (
     <>
@@ -68,8 +75,8 @@ const Navbar = () => {
         <nav
           style={{
             position: 'absolute', top: 0, left: 0, right: 0,
-            background: 'rgba(8,8,8,0.97)',
-            borderBottom: '1px solid rgba(255,255,255,0.07)',
+            background: scrolledBg,
+            borderBottom: `1px solid ${scrolledBorder}`,
             backdropFilter: 'blur(24px)',
             WebkitBackdropFilter: 'blur(24px)',
             display: 'flex', alignItems: 'center',
@@ -97,33 +104,36 @@ const Navbar = () => {
                 className="nav-link"
                 style={{
                   fontFamily: "'DM Mono',monospace", fontSize: 10,
-                  color: 'rgba(245,240,232,0.5)', letterSpacing: '0.18em',
+                  color: textMuted, letterSpacing: '0.18em',
                   textTransform: 'uppercase', background: 'none', border: 'none',
                   cursor: 'pointer', transition: 'color 0.2s',
                 }}
-                onMouseEnter={e => (e.currentTarget.style.color = '#F5F0E8')}
-                onMouseLeave={e => (e.currentTarget.style.color = 'rgba(245,240,232,0.5)')}
+                onMouseEnter={e => (e.currentTarget.style.color = textActive)}
+                onMouseLeave={e => (e.currentTarget.style.color = textMuted)}
               >
                 {l.label}
               </button>
             ))}
           </div>
-          {/* Resume */}
-          <button
-            onClick={() => window.open('/resume.pdf', '_blank')}
-            style={{
-              fontFamily: "'DM Mono',monospace", fontSize: 10,
-              color: '#E8A820', letterSpacing: '0.15em', textTransform: 'uppercase',
-              padding: '6px 18px', borderRadius: 50,
-              border: '1px solid rgba(232,168,32,0.35)',
-              background: 'rgba(232,168,32,0.06)', cursor: 'pointer',
-              transition: 'all 0.2s',
-            }}
-            onMouseEnter={e => { e.currentTarget.style.background='rgba(232,168,32,0.12)'; e.currentTarget.style.borderColor='rgba(232,168,32,0.6)'; }}
-            onMouseLeave={e => { e.currentTarget.style.background='rgba(232,168,32,0.06)'; e.currentTarget.style.borderColor='rgba(232,168,32,0.35)'; }}
-          >
-            ↓ Resume
-          </button>
+          {/* Right: Resume + Toggle */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+            <button
+              onClick={() => window.open('/resume.pdf', '_blank')}
+              style={{
+                fontFamily: "'DM Mono',monospace", fontSize: 10,
+                color: '#B8860B', letterSpacing: '0.15em', textTransform: 'uppercase',
+                padding: '6px 18px', borderRadius: 50,
+                border: '1px solid rgba(184,134,11,0.35)',
+                background: 'rgba(184,134,11,0.06)', cursor: 'pointer',
+                transition: 'all 0.2s',
+              }}
+              onMouseEnter={e => { e.currentTarget.style.background='rgba(184,134,11,0.12)'; e.currentTarget.style.borderColor='rgba(184,134,11,0.6)'; }}
+              onMouseLeave={e => { e.currentTarget.style.background='rgba(184,134,11,0.06)'; e.currentTarget.style.borderColor='rgba(184,134,11,0.35)'; }}
+            >
+              ↓ Resume
+            </button>
+            <ModeToggle />
+          </div>
         </nav>
 
         {/* ── PILL STATE ── */}
@@ -144,7 +154,7 @@ const Navbar = () => {
             style={{
               fontFamily: "'Playfair Display',serif", fontSize: 15,
               color: '#C0272D', fontWeight: 900, marginRight: 8,
-              paddingRight: 14, borderRight: '1px solid rgba(255,255,255,0.08)',
+              paddingRight: 14, borderRight: '1px solid rgba(0,0,0,0.08)',
               background: 'none', border: 'none', borderRadius: 0, cursor: 'pointer',
             }}
           >
@@ -157,18 +167,18 @@ const Navbar = () => {
               onClick={() => go(l.id)}
               style={{
                 fontFamily: "'DM Mono',monospace", fontSize: 10,
-                color: 'rgba(245,240,232,0.55)', letterSpacing: '0.14em',
+                color: textMuted, letterSpacing: '0.14em',
                 textTransform: 'uppercase', padding: '6px 12px', borderRadius: 50,
                 border: '1px solid transparent', background: 'none',
                 cursor: 'pointer', transition: 'all 0.2s',
               }}
               onMouseEnter={e => {
-                e.currentTarget.style.color = '#F5F0E8';
-                e.currentTarget.style.background = 'rgba(255,255,255,0.06)';
-                e.currentTarget.style.borderColor = 'rgba(255,255,255,0.08)';
+                e.currentTarget.style.color = textActive;
+                e.currentTarget.style.background = isDark ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.04)';
+                e.currentTarget.style.borderColor = isDark ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.08)';
               }}
               onMouseLeave={e => {
-                e.currentTarget.style.color = 'rgba(245,240,232,0.55)';
+                e.currentTarget.style.color = textMuted;
                 e.currentTarget.style.background = 'none';
                 e.currentTarget.style.borderColor = 'transparent';
               }}
@@ -177,23 +187,25 @@ const Navbar = () => {
             </button>
           ))}
           {/* Divider */}
-          <div style={{ width: 1, height: 14, background: 'rgba(255,255,255,0.08)', margin: '0 6px', flexShrink: 0 }} />
+          <div style={{ width: 1, height: 14, background: dividerColor, margin: '0 6px', flexShrink: 0 }} />
           {/* Resume pill */}
           <button
             onClick={() => window.open('/resume.pdf', '_blank')}
             style={{
               fontFamily: "'DM Mono',monospace", fontSize: 10,
-              color: '#E8A820', letterSpacing: '0.14em', textTransform: 'uppercase',
+              color: '#B8860B', letterSpacing: '0.14em', textTransform: 'uppercase',
               padding: '6px 16px', borderRadius: 50,
-              border: '1px solid rgba(232,168,32,0.35)',
-              background: 'rgba(232,168,32,0.06)', cursor: 'pointer',
+              border: '1px solid rgba(184,134,11,0.35)',
+              background: 'rgba(184,134,11,0.06)', cursor: 'pointer',
               transition: 'all 0.2s',
             }}
-            onMouseEnter={e => { e.currentTarget.style.background='rgba(232,168,32,0.12)'; }}
-            onMouseLeave={e => { e.currentTarget.style.background='rgba(232,168,32,0.06)'; }}
+            onMouseEnter={e => { e.currentTarget.style.background='rgba(184,134,11,0.12)'; }}
+            onMouseLeave={e => { e.currentTarget.style.background='rgba(184,134,11,0.06)'; }}
           >
             ↓ Resume
           </button>
+          {/* Theme toggle */}
+          <div style={{ margin: '0 4px', flexShrink: 0 }}><ModeToggle /></div>
         </nav>
       </div>
 
@@ -206,8 +218,8 @@ const Navbar = () => {
         <div
           style={{
             position: 'absolute', top: 0, left: 0, right: 0,
-            background: 'rgba(8,8,8,0.97)',
-            borderBottom: '1px solid rgba(255,255,255,0.07)',
+            background: scrolledBg,
+            borderBottom: `1px solid ${scrolledBorder}`,
             backdropFilter: 'blur(24px)',
             WebkitBackdropFilter: 'blur(24px)',
             display: 'flex', alignItems: 'center',
@@ -225,26 +237,29 @@ const Navbar = () => {
             style={{ background: 'none', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 8 }}
           >
             <span style={{ fontFamily: "'Playfair Display',serif", fontSize: 17, color: '#C0272D', fontWeight: 900 }}>GY.</span>
-            <span style={{ fontFamily: "'DM Mono',monospace", fontSize: 11, color: 'rgba(245,240,232,0.4)', letterSpacing: '0.05em' }}>Gara Yaka</span>
+            <span style={{ fontFamily: "'DM Mono',monospace", fontSize: 11, color: textMuted, letterSpacing: '0.05em' }}>Gara Yaka</span>
           </button>
 
-          {/* Hamburger */}
-          <button
-            onClick={() => setMenuOpen(o => !o)}
-            aria-label="Toggle menu"
-            style={{
-              width: 38, height: 38, borderRadius: '50%',
-              border: '1px solid transparent',
-              background: menuOpen ? 'rgba(192,39,45,0.1)' : 'transparent',
-              display: 'flex', flexDirection: 'column', alignItems: 'center',
-              justifyContent: 'center', gap: 5, cursor: 'pointer',
-              transition: 'all 0.3s',
-            }}
-          >
-            <span style={{ display: 'block', width: 14, height: 1, background: menuOpen ? '#C0272D' : '#F5F0E8', borderRadius: 1, transform: menuOpen ? 'rotate(45deg) translate(3px, 4px)' : 'none', transition: 'transform 0.3s, background 0.3s' }} />
-            <span style={{ display: 'block', width: menuOpen ? 0 : 10, height: 1, background: '#F5F0E8', borderRadius: 1, transition: 'width 0.3s', opacity: menuOpen ? 0 : 1 }} />
-            <span style={{ display: 'block', width: 14, height: 1, background: menuOpen ? '#C0272D' : '#F5F0E8', borderRadius: 1, transform: menuOpen ? 'rotate(-45deg) translate(3px, -4px)' : 'none', transition: 'transform 0.3s, background 0.3s' }} />
-          </button>
+          {/* Right: toggle + hamburger */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+            <ModeToggle />
+            <button
+              onClick={() => setMenuOpen(o => !o)}
+              aria-label="Toggle menu"
+              style={{
+                width: 38, height: 38, borderRadius: '50%',
+                border: '1px solid transparent',
+                background: menuOpen ? 'rgba(192,39,45,0.08)' : 'transparent',
+                display: 'flex', flexDirection: 'column', alignItems: 'center',
+                justifyContent: 'center', gap: 5, cursor: 'pointer',
+                transition: 'all 0.3s',
+              }}
+            >
+              <span style={{ display: 'block', width: 14, height: 1, background: menuOpen ? '#C0272D' : textActive, borderRadius: 1, transform: menuOpen ? 'rotate(45deg) translate(3px, 4px)' : 'none', transition: 'transform 0.3s, background 0.3s' }} />
+              <span style={{ display: 'block', width: menuOpen ? 0 : 10, height: 1, background: textActive, borderRadius: 1, transition: 'width 0.3s', opacity: menuOpen ? 0 : 1 }} />
+              <span style={{ display: 'block', width: 14, height: 1, background: menuOpen ? '#C0272D' : textActive, borderRadius: 1, transform: menuOpen ? 'rotate(-45deg) translate(3px, -4px)' : 'none', transition: 'transform 0.3s, background 0.3s' }} />
+            </button>
+          </div>
         </div>
 
         {/* ── PILL STATE ── */}
@@ -266,34 +281,37 @@ const Navbar = () => {
             style={{ background: 'none', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 8 }}
           >
             <span style={{ fontFamily: "'Playfair Display',serif", fontSize: 17, color: '#C0272D', fontWeight: 900 }}>GY.</span>
-            <span style={{ fontFamily: "'DM Mono',monospace", fontSize: 11, color: 'rgba(245,240,232,0.4)', letterSpacing: '0.05em' }}>Gara Yaka</span>
+            <span style={{ fontFamily: "'DM Mono',monospace", fontSize: 11, color: textMuted, letterSpacing: '0.05em' }}>Gara Yaka</span>
           </button>
 
-          {/* Hamburger */}
-          <button
-            onClick={() => setMenuOpen(o => !o)}
-            aria-label="Toggle menu"
-            style={{
-              width: 38, height: 38, borderRadius: '50%',
-              border: '1px solid rgba(255,255,255,0.1)',
-              background: menuOpen ? 'rgba(192,39,45,0.1)' : 'rgba(255,255,255,0.04)',
-              display: 'flex', flexDirection: 'column', alignItems: 'center',
-              justifyContent: 'center', gap: 5, cursor: 'pointer',
-              transition: 'all 0.3s',
-            }}
-          >
-            <span style={{ display: 'block', width: 14, height: 1, background: menuOpen ? '#C0272D' : '#F5F0E8', borderRadius: 1, transform: menuOpen ? 'rotate(45deg) translate(3px, 4px)' : 'none', transition: 'transform 0.3s, background 0.3s' }} />
-            <span style={{ display: 'block', width: menuOpen ? 0 : 10, height: 1, background: '#F5F0E8', borderRadius: 1, transition: 'width 0.3s', opacity: menuOpen ? 0 : 1 }} />
-            <span style={{ display: 'block', width: 14, height: 1, background: menuOpen ? '#C0272D' : '#F5F0E8', borderRadius: 1, transform: menuOpen ? 'rotate(-45deg) translate(3px, -4px)' : 'none', transition: 'transform 0.3s, background 0.3s' }} />
-          </button>
+          {/* Right: toggle + hamburger */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+            <ModeToggle />
+            <button
+              onClick={() => setMenuOpen(o => !o)}
+              aria-label="Toggle menu"
+              style={{
+                width: 38, height: 38, borderRadius: '50%',
+                border: `1px solid ${dividerColor}`,
+                background: menuOpen ? 'rgba(192,39,45,0.08)' : (isDark ? 'rgba(255,255,255,0.03)' : 'rgba(0,0,0,0.03)'),
+                display: 'flex', flexDirection: 'column', alignItems: 'center',
+                justifyContent: 'center', gap: 5, cursor: 'pointer',
+                transition: 'all 0.3s',
+              }}
+            >
+              <span style={{ display: 'block', width: 14, height: 1, background: menuOpen ? '#C0272D' : textActive, borderRadius: 1, transform: menuOpen ? 'rotate(45deg) translate(3px, 4px)' : 'none', transition: 'transform 0.3s, background 0.3s' }} />
+              <span style={{ display: 'block', width: menuOpen ? 0 : 10, height: 1, background: textActive, borderRadius: 1, transition: 'width 0.3s', opacity: menuOpen ? 0 : 1 }} />
+              <span style={{ display: 'block', width: 14, height: 1, background: menuOpen ? '#C0272D' : textActive, borderRadius: 1, transform: menuOpen ? 'rotate(-45deg) translate(3px, -4px)' : 'none', transition: 'transform 0.3s, background 0.3s' }} />
+            </button>
+          </div>
         </div>
 
         {/* Dropdown menu */}
         <div style={{
           position: 'absolute', top: scrolled ? 68 : 80, left: 16, right: 16,
           pointerEvents: menuOpen ? 'auto' : 'none',
-          background: 'rgba(10,10,10,0.96)',
-          border: '1px solid rgba(255,255,255,0.06)',
+          background: dropdownBg,
+          border: `1px solid ${scrolledBorder}`,
           borderRadius: 24,
           backdropFilter: 'blur(32px)',
           WebkitBackdropFilter: 'blur(32px)',
@@ -302,7 +320,7 @@ const Navbar = () => {
           opacity: menuOpen ? 1 : 0,
           transform: menuOpen ? 'translateY(0)' : 'translateY(-10px)',
           transition: 'all 0.4s cubic-bezier(0.16,1,0.3,1)',
-          boxShadow: '0 24px 48px -12px rgba(0,0,0,0.5)',
+          boxShadow: isDark ? '0 24px 48px -12px rgba(0,0,0,0.5)' : '0 24px 48px -12px rgba(0,0,0,0.12)',
         }}>
           <div style={{ padding: '36px 0', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
 
@@ -314,12 +332,12 @@ const Navbar = () => {
                   onClick={() => go(l.id)}
                   style={{
                     fontFamily: "'DM Mono',monospace", fontSize: 13,
-                    color: 'rgba(245,240,232,0.6)', letterSpacing: '0.25em',
+                    color: isDark ? 'rgba(245,240,232,0.55)' : 'rgba(26,26,46,0.55)', letterSpacing: '0.25em',
                     textTransform: 'uppercase', background: 'none', border: 'none',
                     cursor: 'pointer', transition: 'color 0.2s', padding: '4px'
                   }}
-                  onMouseEnter={e => e.currentTarget.style.color = '#F5F0E8'}
-                  onMouseLeave={e => e.currentTarget.style.color = 'rgba(245,240,232,0.6)'}
+                  onMouseEnter={e => e.currentTarget.style.color = textActive}
+                  onMouseLeave={e => e.currentTarget.style.color = isDark ? 'rgba(245,240,232,0.55)' : 'rgba(26,26,46,0.55)'}
                 >
                   {l.label}
                 </button>
@@ -327,7 +345,7 @@ const Navbar = () => {
             </div>
 
             {/* Tiny Divider */}
-            <div style={{ width: 40, height: 1, background: 'rgba(255,255,255,0.08)', margin: '40px auto 32px auto' }} />
+            <div style={{ width: 40, height: 1, background: dividerColor, margin: '40px auto 32px auto' }} />
 
             {/* Bottom Stack: Resume & Socials */}
             <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 28 }}>
@@ -335,14 +353,14 @@ const Navbar = () => {
                 onClick={() => { setMenuOpen(false); window.open('/resume.pdf','_blank'); }}
                 style={{
                   display: 'flex', alignItems: 'center', gap: 10,
-                  background: 'none', border: '1px solid rgba(232,168,32,0.3)',
+                  background: 'none', border: '1px solid rgba(184,134,11,0.3)',
                   borderRadius: 50, cursor: 'pointer',
                   fontFamily: "'DM Mono',monospace", fontSize: 11,
-                  color: '#E8A820', letterSpacing: '0.15em', textTransform: 'uppercase',
+                  color: '#B8860B', letterSpacing: '0.15em', textTransform: 'uppercase',
                   padding: '10px 24px', transition: 'all 0.2s',
                 }}
-                onMouseEnter={e => { e.currentTarget.style.background = 'rgba(232,168,32,0.08)'; e.currentTarget.style.borderColor = 'rgba(232,168,32,0.6)'; }}
-                onMouseLeave={e => { e.currentTarget.style.background = 'none'; e.currentTarget.style.borderColor = 'rgba(232,168,32,0.3)'; }}
+                onMouseEnter={e => { e.currentTarget.style.background = 'rgba(184,134,11,0.08)'; e.currentTarget.style.borderColor = 'rgba(184,134,11,0.6)'; }}
+                onMouseLeave={e => { e.currentTarget.style.background = 'none'; e.currentTarget.style.borderColor = 'rgba(184,134,11,0.3)'; }}
               >
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
                   <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3"/>
@@ -351,10 +369,10 @@ const Navbar = () => {
               </button>
               
               <div style={{ display: 'flex', gap: 24 }}>
-                <a href="https://github.com" target="_blank" rel="noreferrer" style={{ color: 'rgba(245,240,232,0.4)', transition: 'color 0.2s' }} onMouseEnter={e => e.currentTarget.style.color = '#F5F0E8'} onMouseLeave={e => e.currentTarget.style.color = 'rgba(245,240,232,0.4)'}>
+                <a href="https://github.com" target="_blank" rel="noreferrer" style={{ color: textMuted, transition: 'color 0.2s' }} onMouseEnter={e => e.currentTarget.style.color = textActive} onMouseLeave={e => e.currentTarget.style.color = textMuted}>
                   <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 00-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0020 4.77 5.07 5.07 0 0019.91 1S18.73.65 16 2.48a13.38 13.38 0 00-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 005 4.77a5.44 5.44 0 00-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 009 18.13V22"/></svg>
                 </a>
-                <a href="https://linkedin.com" target="_blank" rel="noreferrer" style={{ color: 'rgba(245,240,232,0.4)', transition: 'color 0.2s' }} onMouseEnter={e => e.currentTarget.style.color = '#F5F0E8'} onMouseLeave={e => e.currentTarget.style.color = 'rgba(245,240,232,0.4)'}>
+                <a href="https://linkedin.com" target="_blank" rel="noreferrer" style={{ color: textMuted, transition: 'color 0.2s' }} onMouseEnter={e => e.currentTarget.style.color = textActive} onMouseLeave={e => e.currentTarget.style.color = textMuted}>
                   <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"><path d="M16 8a6 6 0 016 6v7h-4v-7a2 2 0 00-2-2 2 2 0 00-2 2v7h-4v-7a6 6 0 016-6zM2 9h4v12H2z"/><circle cx="4" cy="4" r="2"/></svg>
                 </a>
               </div>
@@ -368,4 +386,3 @@ const Navbar = () => {
 };
 
 export default Navbar;
-

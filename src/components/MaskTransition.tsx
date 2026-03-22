@@ -2,6 +2,7 @@ import { useEffect, useRef } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import maskImg from '@/assets/cyberpunk-design-mask.png';
+import { useTheme } from '@/context/ThemeProvider';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -22,6 +23,8 @@ const MaskTransition = () => {
   const glowRef = useRef<HTMLDivElement>(null);
   const marqueeRef = useRef<HTMLDivElement>(null);
   const progressRef = useRef<HTMLDivElement>(null);
+  const { theme } = useTheme();
+  const isDark = theme === 'dark';
 
   useEffect(() => {
     if (prefersReducedMotion()) return;
@@ -82,7 +85,7 @@ const MaskTransition = () => {
           left: 0,
           right: 0,
           height: '160px',
-          background: 'linear-gradient(to bottom, #0A0A0A, transparent)',
+          background: `linear-gradient(to bottom, hsl(var(--background)), transparent)`,
           zIndex: 20,
           pointerEvents: 'none',
         }}
@@ -98,7 +101,7 @@ const MaskTransition = () => {
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
-          background: '#0A0A0A',
+          background: 'hsl(var(--background))',
         }}
       >
         {/* GRID BACKGROUND */}
@@ -108,7 +111,9 @@ const MaskTransition = () => {
             inset: 0,
             zIndex: 0,
             backgroundImage:
-              'linear-gradient(rgba(255,255,255,0.025) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.025) 1px, transparent 1px)',
+              isDark
+                ? 'linear-gradient(rgba(255,255,255,0.025) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.025) 1px, transparent 1px)'
+                : 'linear-gradient(rgba(0,0,0,0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(0,0,0,0.05) 1px, transparent 1px)',
             backgroundSize: '44px 44px',
           }}
         />
@@ -120,7 +125,7 @@ const MaskTransition = () => {
             inset: 0,
             zIndex: 1,
             background:
-              'radial-gradient(ellipse at center, transparent 30%, #0A0A0A 75%)',
+              `radial-gradient(ellipse at center, transparent 30%, hsl(var(--background)) 75%)`,
           }}
         />
 
@@ -222,7 +227,7 @@ const MaskTransition = () => {
             left: 40,
             right: 40,
             height: '1px',
-            background: 'rgba(245,240,232,0.06)',
+            background: isDark ? 'rgba(245,240,232,0.06)' : 'rgba(0,0,0,0.08)',
             zIndex: 15,
           }}
         >
@@ -354,7 +359,7 @@ const MaskTransition = () => {
           left: 0,
           right: 0,
           height: '120px',
-          background: 'linear-gradient(to top, #0A0A0A, transparent)',
+          background: `linear-gradient(to top, hsl(var(--background)), transparent)`,
           zIndex: 20,
           pointerEvents: 'none',
         }}

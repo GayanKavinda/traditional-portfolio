@@ -1,6 +1,7 @@
 import { useEffect, useRef } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { useTheme } from '@/context/ThemeProvider';
 
 const achievements = [
   { title: 'Best Architecture Award', org: 'Tech Summit APAC', year: '2024', desc: 'Distributed system design for 10M+ daily transactions' },
@@ -13,6 +14,8 @@ const achievements = [
 
 const Achievements = () => {
   const ref = useRef<HTMLDivElement>(null);
+  const { theme } = useTheme();
+  const isDark = theme === 'dark';
 
   useEffect(() => {
     const ctx = gsap.context(() => {
@@ -29,15 +32,15 @@ const Achievements = () => {
   }, []);
 
   return (
-    <section ref={ref} className="py-20 relative" style={{ background: '#0A0A0A' }}>
+    <section ref={ref} className="py-20 relative bg-background">
       {/* Gradient fade at top - behind content */}
-      <div className="absolute top-0 left-0 right-0 h-16 pointer-events-none" style={{ background: 'linear-gradient(to bottom, #0A0A0A 0%, transparent 100%)' }} />
+      <div className="absolute top-0 left-0 right-0 h-16 pointer-events-none" style={{ background: 'linear-gradient(to bottom, hsl(var(--background)) 0%, transparent 100%)' }} />
 
       <div className="max-w-[720px] mx-auto px-6">
         {/* Header (Kandyan Arch Header) */}
         <div className="text-center pb-8 pt-10">
           <p className="font-mono text-[10px] uppercase tracking-[0.22em] text-[#E8A820] mb-2">// Recognition</p>
-          <h2 className="font-playfair text-[38px] text-[#F5F0E8] font-medium tracking-[0.05em] leading-none m-0 max-sm:text-[30px]">Achievements</h2>
+          <h2 className="font-playfair text-[38px] text-foreground font-medium tracking-[0.05em] leading-none m-0 max-sm:text-[30px]">Achievements</h2>
           
           <div className="flex items-center justify-center gap-2.5 mt-3.5">
             <div className="w-10 h-px" style={{ background: 'linear-gradient(to right, transparent, #C41E3A)' }} />
@@ -78,10 +81,10 @@ const Achievements = () => {
           {achievements.map((item, i) => (
             <div
               key={i}
-              className="ach-item group relative grid gap-x-4 py-4 border-b border-[#F5F0E8]/[0.06] last:border-b-0 cursor-default"
+              className="ach-item group relative grid gap-x-4 py-4 border-b border-foreground/[0.06] last:border-b-0 cursor-default"
               style={{ gridTemplateColumns: '28px 1fr' }}
             >
-              <div className="absolute inset-0 bg-white/[0.015] rounded opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
+              <div className="absolute inset-0 bg-foreground/[0.015] rounded opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
               
               <div className="font-playfair text-[20px] font-semibold text-[#C41E3A]/35 leading-[1.3] text-right pr-1">
                 {String(i + 1).padStart(2, '0')}
@@ -89,7 +92,7 @@ const Achievements = () => {
 
               <div className="relative">
                 <div className="flex items-center gap-2.5 flex-wrap">
-                  <span className="font-playfair text-[15px] font-medium text-[#F5F0E8] group-hover:text-white transition-colors duration-200">
+                  <span className="font-playfair text-[15px] font-medium text-foreground group-hover:text-gold transition-colors duration-200">
                     {item.title}
                   </span>
                   <span className="font-mono text-[10px] px-2 py-0.5 rounded-sm bg-[#E8A820]/15 text-[#E8A820] tracking-[0.05em]">
@@ -100,9 +103,9 @@ const Achievements = () => {
                   </span>
                 </div>
                 
-                <div className="flex items-center gap-2 mt-1 font-mono text-[11px] text-[#F5F0E8]/40">
+                <div className="flex items-center gap-2 mt-1 font-mono text-[11px] text-foreground/40">
                   <span className="text-[#E8A820]">{item.org}</span>
-                  <span className="text-[#F5F0E8]/20">·</span>
+                  <span className="text-foreground/20">·</span>
                   <span>{item.desc}</span>
                 </div>
               </div>
@@ -112,7 +115,7 @@ const Achievements = () => {
       </div>
 
       {/* Gradient fade at bottom - behind content */}
-      <div className="absolute bottom-0 left-0 right-0 h-16 pointer-events-none" style={{ background: 'linear-gradient(to top, #0A0A0A 0%, transparent 100%)' }} />
+      <div className="absolute bottom-0 left-0 right-0 h-16 pointer-events-none" style={{ background: 'linear-gradient(to top, hsl(var(--background)) 0%, transparent 100%)' }} />
     </section>
   );
 };

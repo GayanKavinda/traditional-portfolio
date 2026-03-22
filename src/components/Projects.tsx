@@ -44,18 +44,18 @@ const Projects = () => {
   }, []);
 
   return (
-    <section id="projects" ref={ref} className="py-[100px] mt-[-60px] relative z-20" style={{ background: '#0A0A0A' }}>
+    <section id="projects" ref={ref} className="py-[100px] mt-[-60px] relative z-20 bg-background">
       <div className="text-center mb-16">
         <p className="font-mono text-[11px] uppercase tracking-[0.15em] text-gold">// Featured Work</p>
-        <h2 className="font-playfair text-[48px] text-bone mt-2">Selected Work</h2>
+        <h2 className="font-playfair text-[48px] text-foreground mt-2">Selected Work</h2>
         <div className="w-[60px] h-[2px] bg-crimson mx-auto mt-4" />
       </div>
 
       <div className="max-w-[1200px] mx-auto px-10">
         {/* Hero card */}
-        <div className="project-card rounded-xl border border-white/[0.07] overflow-hidden hover:border-crimson/40 hover:-translate-y-[3px] transition-all duration-300" style={{ background: '#111' }}>
+        <div className="project-card rounded-xl border border-border overflow-hidden hover:border-crimson/40 hover:-translate-y-[3px] transition-all duration-300" style={{ background: 'hsl(var(--card))' }}>
           <div className="h-[280px] overflow-hidden relative" style={{ 
-            background: 'linear-gradient(135deg, #161616 0%, #1a0a0a 50%, #0f0f1a 100%)',
+            background: 'linear-gradient(135deg, hsl(var(--muted)) 0%, hsl(var(--card)) 50%, hsl(var(--muted)) 100%)',
           }}>
             <div 
               className="absolute inset-0 opacity-10 pointer-events-none" 
@@ -74,8 +74,8 @@ const Projects = () => {
           </div>
           <div className="p-7 flex justify-between items-start">
             <div>
-              <h3 className="font-playfair text-[24px] text-bone">{heroProject.name}</h3>
-              <p className="font-sans text-[15px] text-bone/50 mt-1">{heroProject.desc}</p>
+              <h3 className="font-playfair text-[24px] text-foreground">{heroProject.name}</h3>
+              <p className="font-sans text-[15px] text-foreground/50 mt-1">{heroProject.desc}</p>
               <div className="flex gap-[6px] mt-3 flex-wrap">
                 {heroProject.tags.map(t => (
                   <span key={t} className="font-mono text-[11px] text-crimson border border-crimson/25 bg-crimson/[0.12] px-[10px] py-[3px] rounded-[3px]">{t}</span>
@@ -84,7 +84,7 @@ const Projects = () => {
             </div>
             <div className="flex flex-col gap-2 items-end">
               <LinkBtn icon="↗" text="Live Demo" color="text-crimson" />
-              <LinkBtn icon="{ }" text="GitHub" color="text-bone/50 hover:text-gold" />
+              <LinkBtn icon="{ }" text="GitHub" color="text-foreground/50 hover:text-gold" />
               <LinkBtn icon="📄" text="Case Study" color="text-gold" />
             </div>
           </div>
@@ -93,17 +93,17 @@ const Projects = () => {
         {/* Row 2 */}
         <div className="grid grid-cols-2 gap-5 mt-5">
           {/* Micro grid */}
-          <div className="project-card rounded-xl border border-white/[0.07] p-6" style={{ background: '#111' }}>
+          <div className="project-card rounded-xl border border-border p-6" style={{ background: 'hsl(var(--card))' }}>
             <div className="flex justify-between items-center">
               <span className="font-mono text-[11px] uppercase text-gold">Recent Projects</span>
-              <span className="font-mono text-[11px] text-bone/40">4 projects</span>
+              <span className="font-mono text-[11px] text-foreground/40">4 projects</span>
             </div>
             <div className="grid grid-cols-2 gap-3 mt-4">
               {microProjects.map((p, idx) => (
-                <div key={p.name} className="group/tile rounded-lg border border-white/[0.06] p-[14px] cursor-pointer hover:border-crimson/35 hover:bg-crimson/[0.04] transition-all min-h-[110px] flex flex-col justify-between" style={{ background: '#0D0D0D' }}>
-                  <p className="font-mono text-[13px] text-bone font-medium">{p.name}</p>
+                <div key={p.name} className="group/tile rounded-lg border border-border p-[14px] cursor-pointer hover:border-crimson/35 hover:bg-crimson/[0.04] transition-all min-h-[110px] flex flex-col justify-between" style={{ background: 'hsl(var(--muted))' }}>
+                  <p className="font-mono text-[13px] text-foreground font-medium">{p.name}</p>
                   <p className="font-mono text-[11px] text-crimson">{p.tech}</p>
-                  <p className="font-sans text-[13px] text-bone/40 mt-1">{p.desc}</p>
+                  <p className="font-sans text-[13px] text-foreground/40 mt-1">{p.desc}</p>
                   <div className="text-right mt-2">
                     <span className="text-gold text-[13px]">↗</span>
                   </div>
@@ -111,15 +111,15 @@ const Projects = () => {
               ))}
             </div>
             <div className="flex gap-6 mt-4">
-              <button className="font-mono text-[12px] text-bone/50 hover:text-bone transition-colors">{'{ }'} GitHub →</button>
+              <button className="font-mono text-[12px] text-foreground/50 hover:text-foreground transition-colors">{'{ }'} GitHub →</button>
               <button className="font-mono text-[12px] text-gold hover:underline">📄 Case Study →</button>
             </div>
           </div>
 
           {/* Side project card */}
-          <div className="project-card rounded-xl border border-white/[0.07] overflow-hidden hover:border-crimson/40 hover:-translate-y-[3px] transition-all duration-300" style={{ background: '#111' }}>
+          <div className="project-card rounded-xl border border-border overflow-hidden hover:border-crimson/40 hover:-translate-y-[3px] transition-all duration-300" style={{ background: 'hsl(var(--card))' }}>
             <div className="h-[180px] overflow-hidden relative" style={{ 
-              background: 'linear-gradient(135deg, #161616 0%, #1a0a0a 50%, #0f0f1a 100%)' 
+              background: 'linear-gradient(135deg, hsl(var(--muted)) 0%, hsl(var(--card)) 50%, hsl(var(--muted)) 100%)' 
             }}>
               <div 
                 className="absolute inset-0 opacity-10 pointer-events-none" 
@@ -129,7 +129,7 @@ const Projects = () => {
                 }} 
               />
               <div className="absolute top-0 left-0 w-0 h-[2px] bg-crimson hover-line transition-all duration-500" />
-              <div className="w-full h-full flex items-center justify-center font-mono text-[13px] text-bone/20 z-10">
+              <div className="w-full h-full flex items-center justify-center font-mono text-[13px] text-foreground/20 z-10">
                 [ Project Screenshot ]
               </div>
               <div className="absolute bottom-2 right-4 font-playfair text-[60px] font-black text-crimson/[0.06] leading-none select-none">
@@ -137,8 +137,8 @@ const Projects = () => {
               </div>
             </div>
             <div className="p-5">
-              <h3 className="font-playfair text-[22px] text-bone">{sideProject.name}</h3>
-              <p className="font-sans text-[15px] text-bone/50 mt-1">{sideProject.desc}</p>
+              <h3 className="font-playfair text-[22px] text-foreground">{sideProject.name}</h3>
+              <p className="font-sans text-[15px] text-foreground/50 mt-1">{sideProject.desc}</p>
               <div className="flex gap-[6px] mt-3 flex-wrap">
                 {sideProject.tags.map(t => (
                   <span key={t} className="font-mono text-[11px] text-crimson border border-crimson/25 bg-crimson/[0.12] px-[10px] py-[3px] rounded-[3px]">{t}</span>
@@ -146,7 +146,7 @@ const Projects = () => {
               </div>
               <div className="flex gap-4 mt-4">
                 <LinkBtn icon="↗" text="Live Demo" color="text-crimson" />
-                <LinkBtn icon="{ }" text="GitHub" color="text-bone/50 hover:text-gold" />
+                <LinkBtn icon="{ }" text="GitHub" color="text-foreground/50 hover:text-gold" />
                 <LinkBtn icon="📄" text="Case Study" color="text-gold" />
               </div>
             </div>

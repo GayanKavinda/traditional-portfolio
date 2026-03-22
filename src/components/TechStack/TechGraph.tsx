@@ -1,289 +1,449 @@
-import { useEffect, useRef } from 'react';
+// src/components/TechStack/TechGraph.tsx
+// Premium radar chart component.
+// - Crimson #C41E3A + Gold #D4891A (exact index.css palette)
+// - Playfair Display axis labels, DM Mono percentage ticks
+// - Animated draw-on (easeOut4) triggered by ScrollTrigger
+// - Per-segment gradient polygon border
+// - Crosshair snap lines on hover
+// - Floating tooltip with category accent border
+// - Category filter pills
+// - Full light / dark mode support
+
+import { useEffect, useRef, useState } from 'react';
 import { gsap } from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { useTheme } from '@/context/ThemeProvider';
+import { CR, GD, CRP, GDP, CAT_META, SKILLS } from './constants';
 
-// UI/UX Pro Max recommended easing + reduced motion support
-const prefersReducedMotion = () => {
-  if (typeof window === 'undefined') return false;
-  return window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-};
+gsap.registerPlugin(ScrollTrigger);
 
-// Tech Graph Component (Canvas Hexagons — v2)
+const CATS = [
+  { key: 'all',   label: 'All',    color: null },
+  { key: 'fe',    label: 'Frontend', color: GD },
+  { key: 'be',    label: 'Backend',  color: CR },
+  { key: 'infra', label: 'Infra',    color: CR },
+  { key: 'data',  label: 'Data',     color: GD },
+] as const;
+
+type Skill = typeof SKILLS[0];
+
+// ── Helpers ──────────────────────────────────────────────────────────────────
+const rm = () =>
+  typeof window !== 'undefined' &&
+  window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+const easeOut4 = (t: number) => 1 - Math.pow(1 - t, 4);
+
+function polarPt(
+  cx: number, cy: number, r: number, i: number, n: number
+): [number, number] {
+  const a = (2 * Math.PI * i / n) - Math.PI / 2;
+  return [cx + r * Math.cos(a), cy + r * Math.sin(a)];
+}
+
+function filterSk(key: string): Skill[] {
+  return key === 'all' ? SKILLS : SKILLS.filter(s => s.cat === key);
+}
+
+// ── Component ────────────────────────────────────────────────────────────────
 export const TechGraph = () => {
-  const wrapRef    = useRef<HTMLDivElement>(null);
-  const canvasRef  = useRef<HTMLCanvasElement>(null);
-  const tipRef     = useRef<HTMLDivElement>(null);
-  const tipLblRef  = useRef<HTMLDivElement>(null);
-  const tipBarRef  = useRef<HTMLDivElement>(null);
-  const tipPctRef  = useRef<HTMLDivElement>(null);
+  const wrapRef   = useRef<HTMLDivElement>(null);
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const { theme } = useTheme();
+  const isDark    = theme === 'dark';
 
+  const [active, setActive]     = useState('all');
+  const [hovSkill, setHovSkill] = useState<Skill | null>(null);
+  const [tipPos, setTipPos]     = useState({ x: 0, y: 0 });
+
+  // Mutable refs — shared across effect and RAF callbacks without stale closure
+  const activeRef  = useRef('all');
+  const animPRef   = useRef(0);
+  const hovIdxRef  = useRef(-1);
+  const dotPosRef  = useRef<{ x: number; y: number }[]>([]);
+  const rafRef     = useRef(0);
+  const drawRef    = useRef<((p: number) => void) | null>(null);
+
+  // ── Main canvas effect (re-runs when theme changes) ──────────────────────
   useEffect(() => {
     const wrap   = wrapRef.current;
     const canvas = canvasRef.current;
     if (!wrap || !canvas) return;
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
-    const tip    = tipRef.current!;
-    const tipLbl = tipLblRef.current!;
-    const tipBar = tipBarRef.current!;
-    const tipPct = tipPctRef.current!;
     const DPR = window.devicePixelRatio || 1;
+    const d   = isDark;
 
-    // Synchronized with Gara Yaka theme (Crimson & Gold)
-    const CAT: Record<string, { color: string; track: string }> = {
-      frontend: { color: '#E8A820', track: 'rgba(232,168,32,0.15)' }, // Gold
-      backend:  { color: '#C41E3A', track: 'rgba(196,30,58,0.15)'  }, // Crimson
-      infra:    { color: '#8E1E3A', track: 'rgba(142,30,58,0.15)'  }, // Deep Crimson
-      data:     { color: '#B8860B', track: 'rgba(184,134,11,0.15)' }, // Dark Gold
+    // Theme tokens
+    const T = {
+      grid:  d ? 'rgba(255,255,255,.05)' : 'rgba(0,0,0,.06)',
+      axis:  d ? 'rgba(255,255,255,.07)' : 'rgba(0,0,0,.08)',
+      tick:  d ? '#2a2e42' : '#b8c0d0',
+      lbl:   d ? '#585c72' : '#8890a8',
+      dot:   d ? '#0f0f14' : '#ffffff',
+      xh:    d ? 'rgba(255,255,255,.09)' : 'rgba(0,0,0,.07)',
     };
 
-    const NODES = [
-      { id:0,  label:'TypeScript', cat:'frontend', pct:92 },
-      { id:1,  label:'React',      cat:'frontend', pct:88 },
-      { id:2,  label:'Next.js',    cat:'frontend', pct:80 },
-      { id:3,  label:'Node.js',    cat:'backend',  pct:85 },
-      { id:4,  label:'GraphQL',    cat:'backend',  pct:72 },
-      { id:5,  label:'Python',     cat:'backend',  pct:78 },
-      { id:6,  label:'AWS',        cat:'infra',    pct:82 },
-      { id:7,  label:'Docker',     cat:'infra',    pct:80 },
-      { id:8,  label:'Kubernetes', cat:'infra',    pct:70 },
-      { id:9,  label:'PostgreSQL', cat:'data',     pct:75 },
-      { id:10, label:'Redis',      cat:'data',     pct:68 },
-      { id:11, label:'MongoDB',    cat:'data',     pct:65 },
-    ];
-
-    const EDGES = [
-      [0,1],[0,2],[0,3],[1,2],[1,3],[1,4],
-      [3,4],[3,5],[3,6],[3,9],[4,9],[4,10],
-      [5,9],[5,10],[6,7],[6,8],[6,9],
-      [7,8],[9,10],[9,11],[10,11],
-    ];
-
-    let W=0, H=0, S=0, hov: number|null=null, pos: {x:number,y:number}[]=[];
-
-    function corner(cx:number, cy:number, sz:number, i:number) {
-      const a = Math.PI/180*(60*i-30);
-      return [cx+sz*Math.cos(a), cy+sz*Math.sin(a)];
-    }
-
-    function layout() {
-      const rows=[2,3,4,3], gap=14, maxCols=4;
-      S = Math.min(
-        W / (maxCols*Math.sqrt(3) + (maxCols+1)*0.4 + 2),
-        H / (rows.length*1.6+1)
-      ) * 1.15; // Increased scale factor
-      const hw=S*Math.sqrt(3), vstep=S*1.65, rowGap = 20; // Increased vertical step and gap
-      const totalH=vstep*(rows.length-1)+S*2;
-      const y0=(H-totalH)/2+S;
-      pos=[];
-      rows.forEach((cnt,r)=>{
-        const rowW=cnt*hw+(cnt-1)*rowGap;
-        const x0=(W-rowW)/2+hw/2;
-        const y=y0+r*vstep;
-        for(let c=0;c<cnt;c++) pos.push({x:x0+c*(hw+rowGap),y});
-      });
-    }
-
-    function hexPath(cx:number, cy:number, sz:number) {
-      ctx.beginPath();
-      for(let i=0;i<6;i++){
-        const [px,py]=corner(cx,cy,sz,i);
-        if(i===0){ctx.moveTo(px,py);}else{ctx.lineTo(px,py);}
-      }
-      ctx.closePath();
-    }
-
-    function getConn(id:number){
-      const nbrs=new Set<number>(), eids=new Set<number>();
-      EDGES.forEach((e,i)=>{
-        if(e[0]===id||e[1]===id){nbrs.add(e[0]);nbrs.add(e[1]);eids.add(i);}
-      });
-      return {nbrs,eids};
-    }
-
-    // ─── Smooth animation state ───────────────────────────────────────────────
-    // edgeT[i]: lerp progress 0→1 for edge i being "active" (glowing)
-    // nodeAlpha[i]: current alpha for each node (for dim effect)
-    const edgeT     = new Float32Array(EDGES.length).fill(0);
-    const nodeAlpha = new Float32Array(NODES.length).fill(1);
-    let rafId = 0;
-    const SPEED = 0.09; // lerp step per frame (~60fps → ~150ms transition)
-
-    function draw() {
+    // ── Draw function ──────────────────────────────────────────────────────
+    function draw(p: number) {
+      const W = canvas.width / DPR;
+      const H = canvas.height / DPR;
       ctx.clearRect(0, 0, W, H);
-      const anyHov = hov !== null;
-      const {nbrs, eids} = anyHov ? getConn(hov!) : {nbrs: new Set<number>(), eids: new Set<number>()};
 
-      // ── Update animated values & check if still animating ──
-      let needsRaf = false;
-      EDGES.forEach((_, i) => {
-        const target = (!anyHov || eids.has(i)) ? (anyHov ? 1 : 0) : 0;
-        const delta  = target - edgeT[i];
-        if (Math.abs(delta) > 0.005) { edgeT[i] += delta * SPEED * 3.5; needsRaf = true; }
-        else edgeT[i] = target;
-      });
-      NODES.forEach((n, i) => {
-        const isHov = n.id === hov;
-        const target = anyHov && !nbrs.has(n.id) && !isHov ? 0.15 : 1;
-        const delta  = target - nodeAlpha[i];
-        if (Math.abs(delta) > 0.005) { nodeAlpha[i] += delta * SPEED * 3; needsRaf = true; }
-        else nodeAlpha[i] = target;
-      });
+      const sk = filterSk(activeRef.current);
+      const n  = sk.length;
+      if (!n) return;
 
-      // ── Draw edges ──
-      EDGES.forEach((e, i) => {
-        const a = pos[e[0]], b = pos[e[1]];
-        if (!a || !b) return;
-        const t = edgeT[i]; // 0 = idle, 1 = active
-        ctx.beginPath(); ctx.moveTo(a.x, a.y); ctx.lineTo(b.x, b.y);
-        if (!anyHov || t < 0.01) {
-          ctx.strokeStyle = `rgba(255,255,255,${0.05 * (1 - t)})`; ctx.lineWidth = 1;
-        } else {
-          // Gradient edge that fades in as t grows
-          const ca = CAT[NODES[e[0]].cat].color, cb = CAT[NODES[e[1]].cat].color;
-          const g = ctx.createLinearGradient(a.x, a.y, b.x, b.y);
-          const alpha = Math.round(t * 0xBB).toString(16).padStart(2, '0');
-          g.addColorStop(0, ca + alpha); g.addColorStop(1, cb + alpha);
-          ctx.strokeStyle = g; ctx.lineWidth = 1 + t * 0.5;
+      const cx = W / 2, cy = H / 2;
+      const maxR = Math.min(cx, cy) - 52;
+
+      // Concentric grid rings
+      [20, 40, 60, 80, 100].forEach(pct => {
+        const r = (pct / 100) * maxR;
+        ctx.beginPath();
+        for (let i = 0; i < n; i++) {
+          const [x, y] = polarPt(cx, cy, r, i, n);
+          if (i === 0) ctx.moveTo(x, y);
+          else ctx.lineTo(x, y);
         }
+        ctx.closePath();
+        ctx.strokeStyle = pct === 100 ? T.axis : T.grid;
+        ctx.lineWidth   = pct === 100 ? 0.8 : 0.5;
         ctx.stroke();
       });
 
-      // ── Draw nodes ──
-      NODES.forEach((n, i) => {
-        const p = pos[i]; if (!p) return;
-        const cat    = CAT[n.cat];
-        const isHov  = n.id === hov;
-        const isNbr  = anyHov && nbrs.has(n.id) && !isHov;
-        const alpha  = nodeAlpha[i];
-        const inner  = S * 0.74;
-        // arc progress for this node — also animated
-        const arcT   = isHov ? 1 : isNbr ? 0.7 : 0;
+      // Axis spokes
+      for (let i = 0; i < n; i++) {
+        const [x2, y2] = polarPt(cx, cy, maxR, i, n);
+        ctx.beginPath();
+        ctx.moveTo(cx, cy);
+        ctx.lineTo(x2, y2);
+        ctx.strokeStyle = T.axis;
+        ctx.lineWidth   = 0.5;
+        ctx.stroke();
+      }
 
-        ctx.save(); ctx.globalAlpha = alpha;
-
-        hexPath(p.x, p.y, inner);
-        ctx.fillStyle = '#161924'; ctx.fill();
-        ctx.strokeStyle = isHov ? cat.color : isNbr ? cat.color + '77' : '#2a2e40';
-        ctx.lineWidth = isHov ? 1.5 : isNbr ? 1 : 0.8; ctx.stroke();
-
-        if (arcT > 0.01) {
-          const arcR = inner * 0.55, pct = n.pct / 100;
-          // track ring
-          ctx.beginPath();
-          ctx.arc(p.x, p.y, arcR, -Math.PI / 2, -Math.PI / 2 + Math.PI * 2);
-          ctx.strokeStyle = cat.color + '22'; ctx.lineWidth = 2.5; ctx.lineCap = 'butt'; ctx.stroke();
-          // active fill
-          ctx.beginPath();
-          ctx.arc(p.x, p.y, arcR, -Math.PI / 2, -Math.PI / 2 + pct * Math.PI * 2 * arcT);
-          ctx.strokeStyle = cat.color + (isHov ? 'FF' : '99');
-          ctx.lineWidth = 2.5; ctx.lineCap = 'round'; ctx.stroke();
-        }
-
-        const fs = Math.max(10, Math.round(inner * 0.2));
-        ctx.font = `${isHov ? '500' : '400'} ${fs}px Inter,system-ui,sans-serif`;
-        ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
-        ctx.fillStyle = isHov ? cat.color : isNbr ? '#c9cdd8' : '#4b5263';
-        ctx.fillText(n.label.length > 9 ? n.label.slice(0, 9) : n.label, p.x, p.y);
-        ctx.restore();
+      // Animated data points
+      const rp: [number, number][] = sk.map((s, i) => {
+        const r = (s.pct / 100) * maxR * p;
+        return polarPt(cx, cy, r, i, n);
       });
 
-      if (needsRaf) rafId = requestAnimationFrame(draw);
+      // Polygon fill
+      const pfx = activeRef.current === 'all'
+        ? CRP
+        : (CAT_META[activeRef.current]?.pfx ?? CRP);
+      ctx.beginPath();
+      rp.forEach(([x, y], i) => {
+        if (i === 0) ctx.moveTo(x, y);
+        else ctx.lineTo(x, y);
+      });
+      ctx.closePath();
+      ctx.fillStyle = pfx + '0.09)';
+      ctx.fill();
+
+      // Per-segment gradient border
+      for (let i = 0; i < rp.length; i++) {
+        const [x1, y1] = rp[i];
+        const [x2, y2] = rp[(i + 1) % rp.length];
+        const c1 = CAT_META[sk[i].cat]?.color ?? CR;
+        const c2 = CAT_META[sk[(i + 1) % sk.length].cat]?.color ?? CR;
+        const g  = ctx.createLinearGradient(x1, y1, x2, y2);
+        g.addColorStop(0, c1);
+        g.addColorStop(1, c2);
+        ctx.beginPath();
+        ctx.moveTo(x1, y1);
+        ctx.lineTo(x2, y2);
+        ctx.strokeStyle = g;
+        ctx.lineWidth   = 1.5;
+        ctx.stroke();
+      }
+
+      // Crosshair snap lines
+      const hi = hovIdxRef.current;
+      if (hi >= 0 && hi < rp.length) {
+        const [hx, hy] = rp[hi];
+        ctx.setLineDash([3, 4]);
+        ctx.strokeStyle = T.xh;
+        ctx.lineWidth   = 0.5;
+        ctx.beginPath(); ctx.moveTo(hx, cy); ctx.lineTo(hx, hy); ctx.stroke();
+        ctx.beginPath(); ctx.moveTo(cx, hy); ctx.lineTo(hx, hy); ctx.stroke();
+        ctx.setLineDash([]);
+      }
+
+      // Dots with hover halo
+      const newPos: { x: number; y: number }[] = [];
+      rp.forEach(([x, y], i) => {
+        const s   = sk[i];
+        const isH = i === hi;
+        const dc  = CAT_META[s.cat]?.color ?? CR;
+        const dp  = CAT_META[s.cat]?.pfx   ?? CRP;
+        newPos.push({ x, y });
+
+        if (isH) {
+          ctx.beginPath(); ctx.arc(x, y, 13, 0, Math.PI * 2);
+          ctx.fillStyle = dp + '0.12)'; ctx.fill();
+          ctx.beginPath(); ctx.arc(x, y, 8, 0, Math.PI * 2);
+          ctx.fillStyle = dp + '0.18)'; ctx.fill();
+        }
+
+        ctx.beginPath(); ctx.arc(x, y, isH ? 5 : 3.5, 0, Math.PI * 2);
+        ctx.fillStyle   = T.dot;
+        ctx.fill();
+        ctx.strokeStyle = dc;
+        ctx.lineWidth   = isH ? 2 : 1.5;
+        ctx.stroke();
+      });
+      dotPosRef.current = newPos;
+
+      // Axis labels
+      const labelR = maxR + 30;
+      sk.forEach((s, i) => {
+        const a   = (2 * Math.PI * i / n) - Math.PI / 2;
+        const lx  = cx + labelR * Math.cos(a);
+        const ly  = cy + labelR * Math.sin(a);
+        const ax  = Math.abs(Math.cos(a)) < 0.15
+          ? 'center'
+          : Math.cos(a) > 0 ? 'left' : 'right';
+        const dy  = Math.sin(a) > 0.4 ? 14 : Math.sin(a) < -0.4 ? 0 : 6;
+        const isH = i === hi;
+        const dc  = CAT_META[s.cat]?.color ?? CR;
+
+        ctx.textAlign    = ax as CanvasTextAlign;
+        ctx.textBaseline = 'alphabetic';
+        ctx.fillStyle    = isH ? dc : T.lbl;
+        ctx.font         = (isH ? '700' : '500') + ' 11px "Playfair Display", serif';
+        ctx.fillText(s.name, lx, ly + dy);
+
+        ctx.font      = '400 10px "DM Mono", monospace';
+        ctx.fillStyle = isH ? dc : T.tick;
+        ctx.fillText(s.pct + '%', lx, ly + dy + 13);
+      });
+
+      // Ring percentage ticks
+      [20, 40, 60, 80].forEach(pct => {
+        const r = (pct / 100) * maxR;
+        const [lx, ly] = polarPt(cx, cy, r, 0, n);
+        ctx.font         = '400 9px "DM Mono", monospace';
+        ctx.textAlign    = 'left';
+        ctx.textBaseline = 'bottom';
+        ctx.fillStyle    = T.tick;
+        ctx.fillText(String(pct), lx + 4, ly - 3);
+      });
     }
 
-    function scheduleRaf() { cancelAnimationFrame(rafId); rafId = requestAnimationFrame(draw); }
+    drawRef.current = draw;
 
+    // ── Animation ──────────────────────────────────────────────────────────
+    function startAnim() {
+      cancelAnimationFrame(rafRef.current);
+      hovIdxRef.current = -1;
+      setHovSkill(null);
+      const t0  = performance.now();
+      const dur = rm() ? 1 : 900;
+
+      function step(now: number) {
+        const raw = Math.min((now - t0) / dur, 1);
+        animPRef.current = easeOut4(raw);
+        draw(animPRef.current);
+        if (raw < 1) rafRef.current = requestAnimationFrame(step);
+        else animPRef.current = 1;
+      }
+      rafRef.current = requestAnimationFrame(step);
+    }
+
+    // ── Hit test ───────────────────────────────────────────────────────────
     function hit(mx: number, my: number) {
-      for (let i = 0; i < pos.length; i++) {
-        const p = pos[i]; if (!p) continue;
-        const dx = mx - p.x, dy = my - p.y;
-        if (Math.sqrt(dx * dx + dy * dy) < S * 0.74) return i;
+      for (let i = 0; i < dotPosRef.current.length; i++) {
+        const { x, y } = dotPosRef.current[i];
+        if ((mx - x) ** 2 + (my - y) ** 2 < 20 ** 2) return i;
       }
       return -1;
     }
 
-    const handleMouseMove = (e: MouseEvent) => {
-      const r = canvas.getBoundingClientRect();
-      const mx = e.clientX - r.left, my = e.clientY - r.top;
+    // ── Mouse events ───────────────────────────────────────────────────────
+    const onMove = (e: MouseEvent) => {
+      const r   = canvas.getBoundingClientRect();
+      const mx  = e.clientX - r.left;
+      const my  = e.clientY - r.top;
       const idx = hit(mx, my);
-      hov = idx >= 0 ? idx : null;
-      canvas.style.cursor = idx >= 0 ? 'pointer' : 'default';
-      if (idx >= 0) {
-        const n = NODES[idx], cat = CAT[n.cat];
-        tipLbl.textContent = n.label;
-        tipBar.style.width = n.pct + '%';
-        tipBar.style.background = cat.color;
-        tipPct.textContent = n.pct + '% proficiency';
-        const wr = wrap.getBoundingClientRect();
-        let tx = e.clientX - wr.left + 16; const ty = e.clientY - wr.top - 70;
-        if (tx + 160 > W) tx = e.clientX - wr.left - 170;
-        tip.style.left = Math.max(0, tx) + 'px';
-        tip.style.top = Math.max(ty, 8) + 'px';
-        tip.style.opacity = '1';
-      } else {
-        tip.style.opacity = '0';
+
+      if (idx !== hovIdxRef.current) {
+        hovIdxRef.current = idx;
+        draw(animPRef.current);
+        setHovSkill(idx >= 0 ? filterSk(activeRef.current)[idx] : null);
       }
-      scheduleRaf();
+
+      if (idx >= 0) {
+        const wr = (canvas.parentElement as HTMLElement).getBoundingClientRect();
+        let tx   = e.clientX - wr.left + 16;
+        const ty = e.clientY - wr.top  - 75;
+        if (tx + 175 > wr.width) tx = e.clientX - wr.left - 190;
+        setTipPos({ x: Math.max(0, tx), y: Math.max(0, ty) });
+      }
     };
 
-    const handleMouseLeave = () => { hov = null; tip.style.opacity = '0'; scheduleRaf(); };
-    canvas.addEventListener('mousemove', handleMouseMove);
-    canvas.addEventListener('mouseleave', handleMouseLeave);
+    const onLeave = () => {
+      hovIdxRef.current = -1;
+      setHovSkill(null);
+      draw(animPRef.current);
+    };
 
-    function resize() {
-      W = wrap.clientWidth;
-      H = Math.round(W * 0.56);
-      canvas.width = W * DPR; canvas.height = H * DPR;
-      canvas.style.width = W + 'px'; canvas.style.height = H + 'px';
+    canvas.addEventListener('mousemove', onMove);
+    canvas.addEventListener('mouseleave', onLeave);
+
+    // ── Resize observer ────────────────────────────────────────────────────
+    const ro = new ResizeObserver(() => {
+      const W = wrap.clientWidth;
+      const H = Math.round(W * 0.92);
+      canvas.width        = W * DPR;
+      canvas.height       = H * DPR;
+      canvas.style.width  = W + 'px';
+      canvas.style.height = H + 'px';
       ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
-      layout(); scheduleRaf();
-    }
+      draw(animPRef.current);
+    });
+    ro.observe(wrap);
 
-    const ro = new ResizeObserver(resize);
-    ro.observe(wrap); resize();
-
-    if (!prefersReducedMotion()) {
+    // ── Scroll entrance ────────────────────────────────────────────────────
+    if (!rm()) {
       gsap.from(canvas, {
         opacity: 0, y: 20, duration: 1, ease: 'power3.out',
-        scrollTrigger: { trigger: wrap, start: 'top 80%', once: true }
+        scrollTrigger: { trigger: wrap, start: 'top 82%', once: true },
       });
     }
 
+    startAnim();
+
     return () => {
-      cancelAnimationFrame(rafId);
-      canvas.removeEventListener('mousemove', handleMouseMove);
-      canvas.removeEventListener('mouseleave', handleMouseLeave);
+      cancelAnimationFrame(rafRef.current);
+      canvas.removeEventListener('mousemove', onMove);
+      canvas.removeEventListener('mouseleave', onLeave);
       ro.disconnect();
     };
-  }, []);
+  }, [isDark]);
 
+  // ── Re-animate when active category changes ──────────────────────────────
+  useEffect(() => {
+    activeRef.current = active;
+    const draw = drawRef.current;
+    if (!draw) return;
+
+    cancelAnimationFrame(rafRef.current);
+    hovIdxRef.current = -1;
+    setHovSkill(null);
+
+    const t0  = performance.now();
+    const dur = rm() ? 1 : 900;
+
+    function step(now: number) {
+      const raw = Math.min((now - t0) / dur, 1);
+      animPRef.current = easeOut4(raw);
+      draw(animPRef.current);
+      if (raw < 1) rafRef.current = requestAnimationFrame(step);
+      else animPRef.current = 1;
+    }
+    rafRef.current = requestAnimationFrame(step);
+  }, [active]);
+
+  // ── Pill class helper ────────────────────────────────────────────────────
+  const pillCls = (key: string, color: string | null) => {
+    const base = [
+      'font-mono text-[9px] tracking-[.1em] uppercase',
+      'px-[14px] py-[5px] rounded-full border',
+      'transition-all duration-200 cursor-pointer',
+    ].join(' ');
+
+    if (active !== key)
+      return base + ' border-border text-muted-foreground hover:border-foreground/30 hover:text-foreground bg-transparent';
+    if (key === 'all')
+      return base + ' text-white border-transparent bg-gradient-to-r from-[#C41E3A] to-[#D4891A]';
+    if (color === GD)
+      return base + ' text-white border-transparent bg-[#D4891A]';
+    return base + ' text-white border-transparent bg-[#C41E3A]';
+  };
+
+  // ── Render ───────────────────────────────────────────────────────────────
   return (
-    <div ref={wrapRef} className="relative w-full">
-      <canvas ref={canvasRef} className="block w-full" />
+    <div className="w-full">
 
-      {/* Tooltip */}
-      <div
-        ref={tipRef}
-        className="absolute pointer-events-none opacity-0 bg-[#1a1d27] border border-[#2e3244] rounded-md px-3.5 py-2.5 min-w-[140px] z-10"
-        style={{ transition: 'opacity 0.12s' }}
-      >
-        <div ref={tipLblRef} className="text-[13px] font-medium text-[#e8eaf0] mb-1.5" />
-        <div className="h-[3px] bg-[#252836] rounded-sm overflow-hidden">
-          <div ref={tipBarRef} className="h-full rounded-sm" style={{ width: 0, transition: 'width 0.2s' }} />
+      {/* Category filter pills */}
+      <div className="flex gap-1.5 flex-wrap mb-5">
+        {CATS.map(c => (
+          <button
+            key={c.key}
+            className={pillCls(c.key, c.color)}
+            onClick={() => setActive(c.key)}
+          >
+            {c.label}
+          </button>
+        ))}
+      </div>
+
+      {/* Canvas + floating tooltip */}
+      <div ref={wrapRef} className="relative">
+        <canvas ref={canvasRef} className="block w-full" />
+
+        {/* Tooltip */}
+        <div
+          className="absolute pointer-events-none z-10"
+          style={{
+            left:      tipPos.x,
+            top:       tipPos.y,
+            opacity:   hovSkill ? 1 : 0,
+            transform: hovSkill ? 'translateY(0)' : 'translateY(5px)',
+            transition: 'opacity .14s, transform .14s',
+          }}
+        >
+          {hovSkill && (
+            <div
+              className="bg-card border border-border rounded-xl px-4 py-3 min-w-[148px]"
+              style={{
+                borderTop: `2px solid ${CAT_META[hovSkill.cat]?.color ?? CR}`,
+              }}
+            >
+              <div
+                className="font-mono text-[9px] tracking-[.14em] uppercase mb-1"
+                style={{ color: CAT_META[hovSkill.cat]?.color ?? CR }}
+              >
+                {CAT_META[hovSkill.cat]?.label}
+              </div>
+              <div className="font-playfair text-[15px] font-bold text-foreground mb-2.5">
+                {hovSkill.name}
+              </div>
+              <div className="h-[2.5px] bg-muted rounded overflow-hidden mb-1.5">
+                <div
+                  className="h-full rounded transition-all duration-300"
+                  style={{
+                    width:      hovSkill.pct + '%',
+                    background: CAT_META[hovSkill.cat]?.color ?? CR,
+                  }}
+                />
+              </div>
+              <div className="font-mono text-[10px] text-muted-foreground">
+                {hovSkill.pct}% proficiency
+              </div>
+            </div>
+          )}
         </div>
-        <div ref={tipPctRef} className="text-[11px] text-[#6b7280] mt-1.5" />
       </div>
 
       {/* Legend */}
-      <div className="flex justify-center gap-5 mt-5 flex-wrap">
+      <div className="flex gap-5 flex-wrap mt-5">
         {[
-          { color:'#E8A820', label:'Frontend'       },
-          { color:'#C41E3A', label:'Backend'         },
-          { color:'#8E1E3A', label:'Infrastructure'  },
-          { color:'#B8860B', label:'Data'            },
-        ].map(l=>(
-          <div key={l.label} className="flex items-center gap-1.5 text-[11px] text-[#6b7280] font-sans tracking-[0.02em]">
-            <div className="w-1.5 h-1.5 rounded-full" style={{background:l.color}} />
-            <span>{l.label}</span>
+          { color: GD, label: 'Frontend / Data' },
+          { color: CR, label: 'Backend / Infra'  },
+        ].map(l => (
+          <div
+            key={l.label}
+            className="flex items-center gap-2 font-mono text-[9px] tracking-[.08em] uppercase text-muted-foreground/50"
+          >
+            <div className="w-4 h-[1.5px]" style={{ background: l.color }} />
+            <div
+              className="w-1.5 h-1.5 rounded-full border-[1.5px]"
+              style={{ borderColor: l.color }}
+            />
+            {l.label}
           </div>
         ))}
       </div>

@@ -42,15 +42,15 @@ const Certifications = () => {
   }, []);
 
   return (
-    <section ref={ref} className="py-20 relative" style={{ background: '#0A0A0A' }}>
+    <section ref={ref} className="py-20 relative bg-background">
       {/* Gradient fade at top - behind content */}
-      <div className="absolute top-0 left-0 right-0 h-16 pointer-events-none" style={{ background: 'linear-gradient(to bottom, #0A0A0A 0%, transparent 100%)' }} />
+      <div className="absolute top-0 left-0 right-0 h-16 pointer-events-none" style={{ background: 'linear-gradient(to bottom, hsl(var(--background)) 0%, transparent 100%)' }} />
 
       <div className="max-w-[720px] mx-auto px-6">
         {/* Header */}
         <div className="text-center pb-8 pt-2">
           <p className="font-mono text-[10px] uppercase tracking-[0.22em] text-[#E8A820] mb-2">// Credentials</p>
-          <h2 className="font-playfair text-[38px] text-[#F5F0E8] font-medium tracking-[0.05em] leading-none m-0 max-sm:text-[30px]">Certifications</h2>
+          <h2 className="font-playfair text-[38px] text-foreground font-medium tracking-[0.05em] leading-none m-0 max-sm:text-[30px]">Certifications</h2>
           
           <div className="flex items-center justify-center gap-2.5 mt-3.5">
             <div className="w-10 h-px" style={{ background: 'linear-gradient(to right, transparent, #C41E3A)' }} />
@@ -88,11 +88,11 @@ const Certifications = () => {
 
         {/* Grid (Dumbara Weave Section) */}
         <div className="pb-12 h-full">
-          <div className="grid grid-cols-3 gap-[2px] rounded-[6px] overflow-hidden bg-[#F5F0E8]/[0.05] border border-[#F5F0E8]/[0.07] max-sm:grid-cols-2">
+          <div className="grid grid-cols-3 gap-[2px] rounded-[6px] overflow-hidden border border-border max-sm:grid-cols-2" style={{ background: 'hsl(var(--border))' }}>
             {certifications.map((cert, i) => (
               <div
                 key={i}
-                className="cert-cell group relative flex items-start gap-3 py-4 px-3.5 bg-[#0e0e0e] hover:bg-[#161616] transition-colors duration-250 cursor-default"
+                className="cert-cell group relative flex items-start gap-3 py-4 px-3.5 bg-card hover:bg-muted transition-colors duration-250 cursor-default"
               >
                 <div className="absolute top-0 left-0 w-[3px] h-full bg-transparent group-hover:bg-[#C41E3A] transition-colors duration-250" />
                 
@@ -101,11 +101,11 @@ const Certifications = () => {
                 </div>
                 
                 <div className="flex-1 min-w-0">
-                  <p className="font-playfair text-[13px] font-medium text-[#F5F0E8] leading-[1.3]">{cert.name}</p>
+                  <p className="font-playfair text-[13px] font-medium text-foreground leading-[1.3]">{cert.name}</p>
                   <div className="flex items-center gap-1.5 mt-[3px]">
                     <span className="font-mono text-[10px] text-[#E8A820]">{cert.abbr}</span>
-                    <span className="text-[#F5F0E8]/15 text-[10px]">·</span>
-                    <span className="font-mono text-[10px] text-[#F5F0E8]/30">{cert.year}</span>
+                    <span className="text-foreground/15 text-[10px]">·</span>
+                    <span className="font-mono text-[10px] text-foreground/30">{cert.year}</span>
                   </div>
                 </div>
               </div>
@@ -128,7 +128,7 @@ const Certifications = () => {
       </div>
 
       {/* Gradient fade at bottom - behind content */}
-      <div className="absolute bottom-0 left-0 right-0 h-16 pointer-events-none" style={{ background: 'linear-gradient(to top, #0A0A0A 0%, transparent 100%)' }} />
+      <div className="absolute bottom-0 left-0 right-0 h-16 pointer-events-none" style={{ background: 'linear-gradient(to top, hsl(var(--background)) 0%, transparent 100%)' }} />
     </section>
   );
 };
