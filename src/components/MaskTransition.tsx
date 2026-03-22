@@ -1,7 +1,7 @@
 import { useEffect, useRef } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import maskImg from '@/assets/mask.png';
+import maskImg from '@/assets/cyberpunk-design-mask.png';
 
 gsap.registerPlugin(ScrollTrigger);
 

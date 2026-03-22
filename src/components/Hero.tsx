@@ -1,7 +1,7 @@
 import { useEffect, useRef } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import dancerImg from '@/assets/dancer.png';
+import dancerImg from '@/assets/dancer human+robot.png';
 
 const Hero = () => {
   const heroRef = useRef<HTMLDivElement>(null);
