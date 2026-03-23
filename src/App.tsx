@@ -8,21 +8,25 @@ import Home from "./pages/Home";
 import AllProjects from "./pages/AllProjects";
 import NotFound from "./pages/NotFound";
 
+import { PreLoader } from "@/components/PreLoader";
+
 const queryClient = new QueryClient();
 
 const App = () => (
   <ThemeProvider defaultTheme="dark" storageKey="gy-theme">
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
-        <CustomCursor />
-        <ResumeButton />
-        <BrowserRouter>
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/projects" element={<AllProjects />} />
-            <Route path="*" element={<NotFound />} />
-          </Routes>
-        </BrowserRouter>
+        <PreLoader>
+          <CustomCursor />
+          <ResumeButton />
+          <BrowserRouter>
+            <Routes>
+              <Route path="/" element={<Home />} />
+              <Route path="/projects" element={<AllProjects />} />
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+          </BrowserRouter>
+        </PreLoader>
       </TooltipProvider>
     </QueryClientProvider>
   </ThemeProvider>
