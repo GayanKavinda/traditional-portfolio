@@ -1,10 +1,14 @@
+// src/components/Experience.tsx
+// Mobile: single-column vertical timeline with left border accent
+// Desktop: original alternating zigzag layout preserved
+// Tags, bullets, hover effects all preserved
+
 import { useEffect, useRef } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import crowdImg from '@/assets/crowd.png';
 import { useTheme } from '@/context/ThemeProvider';
 
-// UI/UX Pro Max recommended easing
 const EASING = 'cubic-bezier(0.16, 1, 0.3, 1)';
 
 interface Entry {
@@ -37,21 +41,18 @@ const entries: Entry[] = [
 
 const Experience = () => {
   const sectionRef = useRef<HTMLDivElement>(null);
-  const { theme } = useTheme();
-  const isDark = theme === 'dark';
-  const entryRefs = useRef<(HTMLDivElement | null)[]>([]);
+  const { theme }  = useTheme();
+  const isDark     = theme === 'dark';
+  const entryRefs  = useRef<(HTMLDivElement | null)[]>([]);
 
   useEffect(() => {
     const ctx = gsap.context(() => {
       entryRefs.current.forEach((el, i) => {
         if (!el) return;
         gsap.from(el, {
-          x: i % 2 === 0 ? -60 : 60,
-          opacity: 0,
-          duration: 0.8,
-          ease: EASING,
-          immediateRender: false,
-          scrollTrigger: { trigger: el, start: 'top 82%' }
+          x: i % 2 === 0 ? -40 : 40, opacity: 0,
+          duration: 0.8, ease: EASING, immediateRender: false,
+          scrollTrigger: { trigger: el, start: 'top 82%' },
         });
       });
     }, sectionRef);
@@ -59,33 +60,67 @@ const Experience = () => {
   }, []);
 
   return (
-    <section id="experience" ref={sectionRef} className="py-[120px] relative overflow-hidden">
-      <img src={crowdImg} alt="" className="absolute inset-0 w-full h-full object-cover opacity-[0.05] pointer-events-none z-0" style={{ mixBlendMode: isDark ? 'screen' : 'multiply' }} />
+    <section id="experience" ref={sectionRef} className="py-[80px] md:py-[120px] relative overflow-hidden">
+      <img
+        src={crowdImg} alt=""
+        className="absolute inset-0 w-full h-full object-cover opacity-[0.05] pointer-events-none z-0"
+        style={{ mixBlendMode: isDark ? 'screen' : 'multiply' }}
+      />
       <div className="absolute inset-0 z-[1]" style={{ background: 'hsl(var(--background) / 0.92)' }} />
 
-      <div className="relative z-[2] text-center mb-16">
+      <div className="relative z-[2] text-center mb-10 md:mb-16">
         <p className="font-mono text-[11px] uppercase tracking-[0.15em] text-gold">// Career</p>
-        <h2 className="font-playfair text-[48px] text-foreground mt-2">Experience</h2>
+        <h2 className="font-playfair text-[clamp(32px,5vw,48px)] text-foreground mt-2">Experience</h2>
       </div>
 
-      <div className="relative z-[2] max-w-[900px] mx-auto px-10">
-        {/* Center line */}
-        <div className="absolute left-1/2 top-0 bottom-0 w-px" style={{ background: 'rgba(192,39,45,0.3)' }} />
+      {/* ── Mobile timeline — single column with left accent border ── */}
+      <div className="md:hidden relative z-[2] max-w-[600px] mx-auto px-6">
+        <div className="border-l-2 border-crimson/25 pl-6 space-y-8">
+          {entries.map((e, i) => (
+            <div
+              key={e.company}
+              ref={el => { entryRefs.current[i] = el; }}
+              className="relative"
+            >
+              {/* Timeline node */}
+              <div className="absolute -left-[31px] top-4 w-[10px] h-[10px] rounded-full bg-crimson" />
 
+              <div
+                className={`rounded-lg border border-border p-4 bg-card ${e.current ? 'border-l-[3px] border-l-crimson' : ''}`}
+              >
+                <p className="font-mono text-[12px] text-gold">{e.company}</p>
+                <p className="font-playfair text-[17px] text-foreground mt-0.5">{e.role}</p>
+                <p className="font-mono text-[10px] text-foreground/40 mt-0.5">{e.period}</p>
+                <ul className="mt-3 space-y-1.5">
+                  {e.bullets.map((b, j) => (
+                    <li key={j} className="font-sans text-[13px] text-foreground/65 flex items-start gap-1.5">
+                      <span className="text-crimson shrink-0 mt-0.5">›</span>{b}
+                    </li>
+                  ))}
+                </ul>
+                <div className="flex gap-1.5 mt-3 flex-wrap">
+                  {e.tags.map(t => (
+                    <span key={t} className="font-mono text-[10px] text-crimson border border-crimson/25 bg-crimson/[0.10] px-2.5 py-0.5 rounded-[3px]">{t}</span>
+                  ))}
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* ── Desktop zigzag layout — original preserved ── */}
+      <div className="hidden md:block relative z-[2] max-w-[900px] mx-auto px-10">
+        <div className="absolute left-1/2 top-0 bottom-0 w-px" style={{ background: 'rgba(192,39,45,0.3)' }} />
         {entries.map((e, i) => {
           const isLeft = i % 2 === 0;
           return (
             <div key={e.company} className="relative mb-16" ref={el => { entryRefs.current[i] = el; }}>
-              {/* Node */}
               <div className="absolute left-1/2 -translate-x-1/2 w-[10px] h-[10px] rounded-full bg-crimson z-10" style={{ top: 20 }} />
               <div className="absolute left-1/2 -translate-x-1/2 font-mono text-[11px] text-gold z-10" style={{ top: 36 }}>{e.year}</div>
-
               <div className={`w-[44%] ${isLeft ? 'mr-auto pr-10 text-right' : 'ml-auto pl-10'}`}>
                 <div
-                  className={`rounded-lg border border-border p-5 group transition-all duration-300 hover:scale-[1.02] ${
-                    e.current ? 'border-l-[3px] border-l-crimson border-crimson/35' : ''
-                  }`}
-                  style={{ background: 'hsl(var(--card))' }}
+                  className={`rounded-lg border border-border p-5 bg-card transition-all duration-300 hover:scale-[1.02] ${e.current ? 'border-l-[3px] border-l-crimson border-crimson/35' : ''}`}
                 >
                   <p className="font-mono text-[13px] text-gold">{e.company}</p>
                   <p className="font-playfair text-[18px] text-foreground mt-1">{e.role}</p>

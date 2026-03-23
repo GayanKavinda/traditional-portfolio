@@ -74,14 +74,14 @@ export const TechGraph = () => {
     const DPR = window.devicePixelRatio || 1;
     const d   = isDark;
 
-    // Theme tokens
+    // Theme tokens (enhanced for full clear view)
     const T = {
-      grid:  d ? 'rgba(255,255,255,.05)' : 'rgba(0,0,0,.06)',
-      axis:  d ? 'rgba(255,255,255,.07)' : 'rgba(0,0,0,.08)',
-      tick:  d ? '#2a2e42' : '#b8c0d0',
-      lbl:   d ? '#585c72' : '#8890a8',
-      dot:   d ? '#0f0f14' : '#ffffff',
-      xh:    d ? 'rgba(255,255,255,.09)' : 'rgba(0,0,0,.07)',
+      grid:  d ? 'rgba(255,255,255,.15)' : 'rgba(0,0,0,.15)',
+      axis:  d ? 'rgba(255,255,255,.25)' : 'rgba(0,0,0,.20)',
+      tick:  d ? '#9aa1c2' : '#69728f',
+      lbl:   d ? '#c8cfea' : '#49516d',
+      dot:   d ? '#181b2a' : '#ffffff',
+      xh:    d ? 'rgba(255,255,255,.2)'  : 'rgba(0,0,0,.15)',
     };
 
     // ── Draw function ──────────────────────────────────────────────────────
@@ -108,7 +108,7 @@ export const TechGraph = () => {
         }
         ctx.closePath();
         ctx.strokeStyle = pct === 100 ? T.axis : T.grid;
-        ctx.lineWidth   = pct === 100 ? 0.8 : 0.5;
+        ctx.lineWidth   = pct === 100 ? 1 : 0.8;
         ctx.stroke();
       });
 
@@ -119,7 +119,7 @@ export const TechGraph = () => {
         ctx.moveTo(cx, cy);
         ctx.lineTo(x2, y2);
         ctx.strokeStyle = T.axis;
-        ctx.lineWidth   = 0.5;
+        ctx.lineWidth   = 0.8;
         ctx.stroke();
       }
 
@@ -139,7 +139,7 @@ export const TechGraph = () => {
         else ctx.lineTo(x, y);
       });
       ctx.closePath();
-      ctx.fillStyle = pfx + '0.09)';
+      ctx.fillStyle = pfx + '0.2)';
       ctx.fill();
 
       // Per-segment gradient border
@@ -155,7 +155,7 @@ export const TechGraph = () => {
         ctx.moveTo(x1, y1);
         ctx.lineTo(x2, y2);
         ctx.strokeStyle = g;
-        ctx.lineWidth   = 1.5;
+        ctx.lineWidth   = 2;
         ctx.stroke();
       }
 
@@ -165,7 +165,7 @@ export const TechGraph = () => {
         const [hx, hy] = rp[hi];
         ctx.setLineDash([3, 4]);
         ctx.strokeStyle = T.xh;
-        ctx.lineWidth   = 0.5;
+        ctx.lineWidth   = 1;
         ctx.beginPath(); ctx.moveTo(hx, cy); ctx.lineTo(hx, hy); ctx.stroke();
         ctx.beginPath(); ctx.moveTo(cx, hy); ctx.lineTo(hx, hy); ctx.stroke();
         ctx.setLineDash([]);
@@ -182,16 +182,16 @@ export const TechGraph = () => {
 
         if (isH) {
           ctx.beginPath(); ctx.arc(x, y, 13, 0, Math.PI * 2);
-          ctx.fillStyle = dp + '0.12)'; ctx.fill();
+          ctx.fillStyle = dp + '0.2)'; ctx.fill();
           ctx.beginPath(); ctx.arc(x, y, 8, 0, Math.PI * 2);
-          ctx.fillStyle = dp + '0.18)'; ctx.fill();
+          ctx.fillStyle = dp + '0.6)'; ctx.fill();
         }
 
-        ctx.beginPath(); ctx.arc(x, y, isH ? 5 : 3.5, 0, Math.PI * 2);
+        ctx.beginPath(); ctx.arc(x, y, isH ? 5.5 : 4, 0, Math.PI * 2);
         ctx.fillStyle   = T.dot;
         ctx.fill();
         ctx.strokeStyle = dc;
-        ctx.lineWidth   = isH ? 2 : 1.5;
+        ctx.lineWidth   = isH ? 2.5 : 2;
         ctx.stroke();
       });
       dotPosRef.current = newPos;
@@ -212,7 +212,7 @@ export const TechGraph = () => {
         ctx.textAlign    = ax as CanvasTextAlign;
         ctx.textBaseline = 'alphabetic';
         ctx.fillStyle    = isH ? dc : T.lbl;
-        ctx.font         = (isH ? '700' : '500') + ' 11px "Playfair Display", serif';
+        ctx.font         = (isH ? '700' : '600') + ' 12px "Playfair Display", serif';
         ctx.fillText(s.name, lx, ly + dy);
 
         ctx.font      = '400 10px "DM Mono", monospace';
@@ -306,17 +306,23 @@ export const TechGraph = () => {
     ro.observe(wrap);
 
     // ── Scroll entrance ────────────────────────────────────────────────────
+    let ctxGsap: gsap.Context | null = null;
     if (!rm()) {
-      gsap.from(canvas, {
-        opacity: 0, y: 20, duration: 1, ease: 'power3.out',
-        scrollTrigger: { trigger: wrap, start: 'top 82%', once: true },
-      });
+      ctxGsap = gsap.context(() => {
+        gsap.fromTo(canvas, 
+          { opacity: 0, y: 20 },
+          { opacity: 1, y: 0, duration: 1, ease: 'power3.out',
+            scrollTrigger: { trigger: wrap, start: 'top 85%', once: true }
+          }
+        );
+      }, wrapRef);
     }
 
     startAnim();
 
     return () => {
       cancelAnimationFrame(rafRef.current);
+      if (ctxGsap) ctxGsap.revert();
       canvas.removeEventListener('mousemove', onMove);
       canvas.removeEventListener('mouseleave', onLeave);
       ro.disconnect();
@@ -381,7 +387,7 @@ export const TechGraph = () => {
       </div>
 
       {/* Canvas + floating tooltip */}
-      <div ref={wrapRef} className="relative">
+      <div ref={wrapRef} className="relative max-w-[440px] mx-auto md:ml-0 md:max-w-[85%]">
         <canvas ref={canvasRef} className="block w-full" />
 
         {/* Tooltip */}

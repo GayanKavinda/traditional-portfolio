@@ -1,6 +1,8 @@
+//src/components/Navbar.tsx
+
 import { useEffect, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { ModeToggle } from './ThemeToggle';
+import { ModeToggle } from '@/components/common/ThemeToggle';
 import { useTheme } from '@/context/ThemeProvider';
 
 const navLinks = [

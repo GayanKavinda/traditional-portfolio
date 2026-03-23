@@ -1,47 +1,45 @@
+// src/components/Achievements.tsx
+// Mobile: full-width single column, reduced padding
+// Desktop: original centered 720px layout preserved
+// All Kandyan arch ornaments and hover effects preserved
+
 import { useEffect, useRef } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { useTheme } from '@/context/ThemeProvider';
 
 const achievements = [
-  { title: 'Best Architecture Award', org: 'Tech Summit APAC', year: '2024', desc: 'Distributed system design for 10M+ daily transactions' },
-  { title: 'Top Open Source Contributor', org: 'GitHub', year: '2023', desc: '500+ stars on distributed caching library' },
-  { title: 'Speaker — NodeConf Asia', org: 'CNCF', year: '2023', desc: 'Talk on production Kubernetes patterns' },
-  { title: 'Hackathon Winner — FinTech', org: 'WSO2', year: '2022', desc: '1st place among 200+ teams' },
-  { title: 'Stack Overflow Top 1%', org: 'Stack Overflow', year: '2022', desc: 'Top contributor in Node.js & TypeScript' },
-  { title: 'Innovation Prize', org: 'TechCrunch', year: '2021', desc: 'Developer tooling category winner' },
+  { title: 'Best Architecture Award',      org: 'Tech Summit APAC',  year: '2024', desc: 'Distributed system design for 10M+ daily transactions' },
+  { title: 'Top Open Source Contributor',  org: 'GitHub',            year: '2023', desc: '500+ stars on distributed caching library' },
+  { title: 'Speaker — NodeConf Asia',      org: 'CNCF',             year: '2023', desc: 'Talk on production Kubernetes patterns' },
+  { title: 'Hackathon Winner — FinTech',   org: 'WSO2',             year: '2022', desc: '1st place among 200+ teams' },
+  { title: 'Stack Overflow Top 1%',        org: 'Stack Overflow',   year: '2022', desc: 'Top contributor in Node.js & TypeScript' },
+  { title: 'Innovation Prize',             org: 'TechCrunch',       year: '2021', desc: 'Developer tooling category winner' },
 ];
 
 const Achievements = () => {
   const ref = useRef<HTMLDivElement>(null);
-  const { theme } = useTheme();
-  const isDark = theme === 'dark';
 
   useEffect(() => {
     const ctx = gsap.context(() => {
       gsap.from('.ach-item', {
-        x: -20,
-        opacity: 0,
-        stagger: 0.08,
-        duration: 0.5,
-        ease: 'power2.out',
-        scrollTrigger: { trigger: ref.current, start: 'top 80%', once: true }
+        x: -20, opacity: 0, stagger: 0.08, duration: 0.5, ease: 'power2.out',
+        scrollTrigger: { trigger: ref.current, start: 'top 80%', once: true },
       });
     }, ref);
     return () => ctx.revert();
   }, []);
 
   return (
-    <section ref={ref} className="py-20 relative bg-background">
-      {/* Gradient fade at top - behind content */}
-      <div className="absolute top-0 left-0 right-0 h-16 pointer-events-none" style={{ background: 'linear-gradient(to bottom, hsl(var(--background)) 0%, transparent 100%)' }} />
+    <section ref={ref} className="py-16 md:py-20 relative bg-background">
+      <div className="absolute top-0 left-0 right-0 h-16 pointer-events-none"
+        style={{ background: 'linear-gradient(to bottom, hsl(var(--background)) 0%, transparent 100%)' }}
+      />
 
       <div className="max-w-[720px] mx-auto px-6">
-        {/* Header (Kandyan Arch Header) */}
-        <div className="text-center pb-8 pt-10">
+        {/* Header */}
+        <div className="text-center pb-6 md:pb-8 pt-6 md:pt-10">
           <p className="font-mono text-[10px] uppercase tracking-[0.22em] text-[#E8A820] mb-2">// Recognition</p>
-          <h2 className="font-playfair text-[38px] text-foreground font-medium tracking-[0.05em] leading-none m-0 max-sm:text-[30px]">Achievements</h2>
-          
+          <h2 className="font-playfair text-[clamp(28px,5vw,38px)] text-foreground font-medium tracking-[0.05em] leading-none">Achievements</h2>
           <div className="flex items-center justify-center gap-2.5 mt-3.5">
             <div className="w-10 h-px" style={{ background: 'linear-gradient(to right, transparent, #C41E3A)' }} />
             <svg width="60" height="18" viewBox="0 0 60 18">
@@ -59,9 +57,9 @@ const Achievements = () => {
           </div>
         </div>
 
-        {/* Lotus top ornament */}
-        <div className="flex items-center justify-center py-2 opacity-55">
-          <svg width="320" height="18" viewBox="0 0 320 18">
+        {/* Ornament */}
+        <div className="flex items-center justify-center py-2 opacity-55 overflow-hidden">
+          <svg width="100%" viewBox="0 0 320 18" preserveAspectRatio="xMidYMid meet">
             <g fill="none" stroke="#E8A820" strokeWidth="0.7" opacity="0.5">
               <line x1="0" y1="9" x2="118" y2="9"/>
               <path d="M130 9 C130 4 135 1 140 1 C145 1 150 4 150 9 C150 14 145 17 140 17 C135 17 130 14 130 9 Z"/>
@@ -76,8 +74,8 @@ const Achievements = () => {
           </svg>
         </div>
 
-        {/* List (Batik Section) */}
-        <div className="pb-12 pt-4">
+        {/* Achievement list */}
+        <div className="pb-10 md:pb-12 pt-4">
           {achievements.map((item, i) => (
             <div
               key={i}
@@ -85,25 +83,20 @@ const Achievements = () => {
               style={{ gridTemplateColumns: '28px 1fr' }}
             >
               <div className="absolute inset-0 bg-foreground/[0.015] rounded opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
-              
-              <div className="font-playfair text-[20px] font-semibold text-[#C41E3A]/35 leading-[1.3] text-right pr-1">
+              <div className="font-playfair text-[18px] md:text-[20px] font-semibold text-[#C41E3A]/35 leading-[1.3] text-right pr-1">
                 {String(i + 1).padStart(2, '0')}
               </div>
-
               <div className="relative">
-                <div className="flex items-center gap-2.5 flex-wrap">
-                  <span className="font-playfair text-[15px] font-medium text-foreground group-hover:text-gold transition-colors duration-200">
+                <div className="flex items-center gap-2 flex-wrap">
+                  <span className="font-playfair text-[14px] md:text-[15px] font-medium text-foreground group-hover:text-gold transition-colors duration-200">
                     {item.title}
                   </span>
-                  <span className="font-mono text-[10px] px-2 py-0.5 rounded-sm bg-[#E8A820]/15 text-[#E8A820] tracking-[0.05em]">
+                  <span className="font-mono text-[9px] md:text-[10px] px-2 py-0.5 rounded-sm bg-[#E8A820]/15 text-[#E8A820] tracking-[0.05em]">
                     {item.year}
                   </span>
-                  <span className="ml-auto text-[#C41E3A] opacity-0 group-hover:opacity-100 transition-opacity duration-200 text-sm leading-none">
-                    →
-                  </span>
+                  <span className="ml-auto text-[#C41E3A] opacity-0 group-hover:opacity-100 transition-opacity duration-200 text-sm leading-none">→</span>
                 </div>
-                
-                <div className="flex items-center gap-2 mt-1 font-mono text-[11px] text-foreground/40">
+                <div className="flex items-center gap-2 mt-1 font-mono text-[10px] md:text-[11px] text-foreground/40 flex-wrap">
                   <span className="text-[#E8A820]">{item.org}</span>
                   <span className="text-foreground/20">·</span>
                   <span>{item.desc}</span>
@@ -114,8 +107,9 @@ const Achievements = () => {
         </div>
       </div>
 
-      {/* Gradient fade at bottom - behind content */}
-      <div className="absolute bottom-0 left-0 right-0 h-16 pointer-events-none" style={{ background: 'linear-gradient(to top, hsl(var(--background)) 0%, transparent 100%)' }} />
+      <div className="absolute bottom-0 left-0 right-0 h-16 pointer-events-none"
+        style={{ background: 'linear-gradient(to top, hsl(var(--background)) 0%, transparent 100%)' }}
+      />
     </section>
   );
 };

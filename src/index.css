@@ -277,3 +277,59 @@ html {
 
 @keyframes mql { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
 @keyframes mqr { 0% { transform: translateX(-50%); } 100% { transform: translateX(0); } }
+
+
+/*
+  ADD THESE ADDITIONS to the bottom of your existing src/index.css
+  Do NOT replace your existing file — append these rules.
+*/
+
+/* ── Mobile / responsive resets ── */
+@media (max-width: 767px) {
+  /* Prevent horizontal scroll from any stray overflow */
+  body { overflow-x: hidden; }
+
+  /* Experience zigzag: hide center line on mobile (handled by single-column layout) */
+  #experience .center-line { display: none; }
+
+  /* Code blocks in Hero: allow horizontal scroll within pre */
+  pre { white-space: pre; overflow-x: auto; max-width: 100%; }
+}
+
+/* ── Improved TechStack marquee ── */
+/* Already defined in index.css — no change needed */
+
+/* ── About section stat animation ── */
+.about-text-anim { opacity: 1; } /* fallback if GSAP not loaded */
+
+/* ── Metric count-up ── */
+.metric-val { font-variant-numeric: tabular-nums; }
+
+/* ── Project card hover line ── */
+.project-card:hover .hover-line { width: 100% !important; }
+
+/* ── Mobile nav overlay backdrop ── */
+@media (max-width: 1023px) {
+  /* When mobile menu is open, add backdrop */
+  body.menu-open::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.4);
+    z-index: 998;
+    pointer-events: none;
+  }
+}
+
+/* ── Tighter section spacing on mobile ── */
+@media (max-width: 767px) {
+  section { padding-top: 64px; padding-bottom: 64px; }
+}
+
+/* ── Accessible focus styles ── */
+button:focus-visible,
+a:focus-visible {
+  outline: 2px solid hsl(var(--gold));
+  outline-offset: 3px;
+  border-radius: 3px;
+}

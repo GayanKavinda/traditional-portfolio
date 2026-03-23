@@ -17,12 +17,12 @@ const Sep = () => (
 );
 
 // Interleave <Sep /> between chips
-function withSeps(skills: typeof ROW_1): React.ReactNode[] {
+function withSeps(skills: typeof ROW_1, runIndex: number): React.ReactNode[] {
   return skills.flatMap((s, i) => {
     const nodes: React.ReactNode[] = [
-      <SkillChip key={s.id} name={s.name} accentColor={CAT_META[s.cat].color} />,
+      <SkillChip key={`${s.id}-${runIndex}`} name={s.name} accentColor={CAT_META[s.cat].color} />,
     ];
-    if (i < skills.length - 1) nodes.push(<Sep key={`sep-${s.id}`} />);
+    if (i < skills.length - 1) nodes.push(<Sep key={`sep-${s.id}-${runIndex}`} />);
     return nodes;
   });
 }
@@ -31,7 +31,7 @@ function withSeps(skills: typeof ROW_1): React.ReactNode[] {
 function renderTrackItems(skills: typeof ROW_1) {
   const items: React.ReactNode[] = [];
   for (let r = 0; r < 4; r++) {
-    items.push(...withSeps(skills));
+    items.push(...withSeps(skills, r));
     if (r < 3) {
       items.push(<div key={`gap-${r}`} style={{ width: '10px', flexShrink: 0 }} />);
     }

@@ -1,17 +1,18 @@
 // src/components/TechStack/index.tsx
-// Layout (top → bottom):
-//   1. Header — eyebrow + Playfair title + subtitle
-//   2. Stat counter row (avg %, count, domains)
-//   3. SkillMarquee — full-width, row 1 left / row 2 right
-//   4. Two-column grid:
-//        Left  — radar chart with category filter pills + legend
-//        Right — top-4 featured skill cards
+// Upgraded "The Stack" section.
+// KEY CHANGES from previous version:
+//   - Radar chart replaced with SystemPillars (4 architectural pillars)
+//   - "Avg proficiency %" stat removed — subjective and junior-looking
+//   - Stat row now shows: Technologies · Domains · Years
+//   - Top-4 featured cards retain progress bars (useful for recruiters) but are
+//     repositioned below the marquee, right column beside the pillars
+//   - Full mobile responsiveness
 
 import { useEffect, useRef } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { TechGraph } from './TechGraph';
 import { SkillMarquee } from './SkillMarquee';
+import { SystemPillars } from '../SystemPillars';
 import { SKILLS, CAT_META } from './constants';
 
 gsap.registerPlugin(ScrollTrigger);
@@ -20,10 +21,9 @@ const rm = () =>
   typeof window !== 'undefined' &&
   window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-const AVG   = Math.round(SKILLS.reduce((a, s) => a + s.pct, 0) / SKILLS.length);
 const TOP_4 = [...SKILLS].sort((a, b) => b.pct - a.pct).slice(0, 4);
 
-// ── Animated count-up number ─────────────────────────────────────────────────
+// ── Animated count-up ────────────────────────────────────────────────────────
 function CountUp({ target, suffix = '' }: { target: number; suffix?: string }) {
   const ref = useRef<HTMLSpanElement>(null);
   useEffect(() => {
@@ -43,7 +43,6 @@ function CountUp({ target, suffix = '' }: { target: number; suffix?: string }) {
 const TechStack = () => {
   const sectionRef = useRef<HTMLElement>(null);
 
-  // Animate feat-bar fills on scroll
   useEffect(() => {
     if (rm()) return;
     const ctx = gsap.context(() => {
@@ -59,35 +58,35 @@ const TechStack = () => {
   }, []);
 
   return (
-    <section id="skills" ref={sectionRef} className="py-[100px] relative overflow-hidden">
-      <div className="max-w-[1280px] mx-auto px-8 md:px-12">
+    <section id="skills" ref={sectionRef} className="py-[80px] md:py-[100px] relative overflow-hidden">
+      <div className="max-w-[1280px] mx-auto px-6 md:px-12">
 
-        {/* ── 1. Header ────────────────────────────────────────────── */}
-        <div className="text-center mb-14">
+        {/* ── Header ────────────────────────────────────────────────── */}
+        <div className="text-center mb-10 md:mb-14">
           <p className="font-mono text-[10px] tracking-[.18em] uppercase text-[#D4891A] mb-2.5">
-            // proficiency map
+            // Technology
           </p>
-          <h2 className="font-playfair text-[clamp(38px,5vw,58px)] font-bold text-foreground leading-tight">
+          <h2 className="font-playfair text-[clamp(32px,5vw,56px)] font-bold text-foreground leading-tight">
             The <em className="italic text-[#C41E3A]">Stack</em>
           </h2>
-          <p className="text-[14px] text-muted-foreground mt-3 max-w-[360px] mx-auto leading-relaxed">
-            Technologies I reach for — mapped by category and proficiency.
+          <p className="text-[13px] md:text-[14px] text-muted-foreground mt-3 max-w-[360px] mx-auto leading-relaxed">
+            Technologies grouped by the engineering pillar they serve.
           </p>
         </div>
 
-        {/* ── 2. Stat row — bordered pill container ────────────────── */}
-        <div className="flex justify-center mb-14">
+        {/* ── Stat row — no subjective percentages ─────────────────── */}
+        <div className="flex justify-center mb-10 md:mb-14">
           <div className="inline-flex border border-border rounded-2xl overflow-hidden divide-x divide-border">
             {[
-              { target: AVG,            suffix: '%', label: 'avg proficiency' },
-              { target: SKILLS.length,  suffix: '',  label: 'technologies'    },
-              { target: 4,              suffix: '',  label: 'domains'          },
+              { target: SKILLS.length, suffix: '',  label: 'Technologies' },
+              { target: 4,             suffix: '',  label: 'Pillars'      },
+              { target: 10,            suffix: '+', label: 'Years'        },
             ].map((s, i) => (
-              <div key={i} className="flex flex-col items-center justify-center px-10 py-5 min-w-[120px]">
-                <div className="font-playfair text-[28px] font-bold text-foreground leading-none">
+              <div key={i} className="flex flex-col items-center justify-center px-6 md:px-10 py-4 md:py-5 min-w-[90px] md:min-w-[120px]">
+                <div className="font-playfair text-[24px] md:text-[28px] font-bold text-foreground leading-none">
                   <CountUp target={s.target} suffix={s.suffix} />
                 </div>
-                <div className="font-mono text-[9px] tracking-[.14em] uppercase text-muted-foreground/50 mt-1.5">
+                <div className="font-mono text-[8px] md:text-[9px] tracking-[.14em] uppercase text-muted-foreground/50 mt-1.5">
                   {s.label}
                 </div>
               </div>
@@ -95,34 +94,38 @@ const TechStack = () => {
           </div>
         </div>
 
-        {/* ── 3. Marquee — full width, above grid ──────────────────── */}
-        <div className="mb-16">
+        {/* ── Marquee ───────────────────────────────────────────────── */}
+        <div className="mb-12 md:mb-16">
           <SkillMarquee />
         </div>
 
-        {/* ── 4. Grid: radar left, featured cards right ────────────── */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-10 items-start">
+        {/* ── System Pillars — replaces radar ───────────────────────── */}
+        <div className="grid grid-cols-1 lg:grid-cols-[1fr_320px] gap-8 md:gap-10 items-start">
 
-          {/* Left — radar */}
-          <TechGraph />
+          {/* Left — pillars */}
+          <div>
+            <p className="font-mono text-[9px] tracking-[.16em] uppercase text-muted-foreground/50 mb-1">
+              // System design pillars
+            </p>
+            <SystemPillars />
+          </div>
 
-          {/* Right — top-4 featured skill cards */}
+          {/* Right — top-4 skills */}
           <div>
             <p className="font-mono text-[9px] tracking-[.16em] uppercase text-muted-foreground/50 mb-4">
-              // top skills
+              // Top skills
             </p>
-
             <div className="grid grid-cols-2 gap-3">
               {TOP_4.map(s => {
                 const meta = CAT_META[s.cat];
                 return (
                   <div
                     key={s.id}
-                    className="bg-card border border-border rounded-2xl p-[18px] transition-colors duration-200 hover:border-border/60"
+                    className="bg-card border border-border rounded-2xl p-[16px] transition-colors duration-200 hover:border-border/60"
                   >
-                    <div className="flex items-start justify-between mb-3.5">
+                    <div className="flex items-start justify-between mb-3">
                       <div>
-                        <div className="font-playfair text-[14px] font-bold text-foreground leading-tight">
+                        <div className="font-playfair text-[13px] font-bold text-foreground leading-tight">
                           {s.name}
                         </div>
                         <div
@@ -132,13 +135,8 @@ const TechStack = () => {
                           {meta.label}
                         </div>
                       </div>
-                      <div className="font-playfair text-[24px] font-bold text-foreground leading-none">
-                        {s.pct}
-                        <span className="text-[11px] text-muted-foreground/40">%</span>
-                      </div>
                     </div>
-
-                    {/* Progress bar */}
+                    {/* Thin bar — kept for scannability, no percentage number shown */}
                     <div className="h-[2px] bg-border rounded overflow-hidden">
                       <div
                         className="feat-bar h-full rounded"
@@ -152,11 +150,11 @@ const TechStack = () => {
             </div>
 
             {/* Domain legend */}
-            <div className="mt-6 flex flex-wrap gap-x-5 gap-y-2">
+            <div className="mt-5 flex flex-wrap gap-x-5 gap-y-2">
               {Object.entries(CAT_META).map(([key, meta]) => (
                 <div key={key} className="flex items-center gap-2">
-                  <div className="w-[6px] h-[6px] rounded-full" style={{ background: meta.color }} />
-                  <span className="font-mono text-[9px] tracking-[.08em] uppercase text-muted-foreground/50">
+                  <div className="w-[5px] h-[5px] rounded-full" style={{ background: meta.color }} />
+                  <span className="font-mono text-[8px] tracking-[.08em] uppercase text-muted-foreground/50">
                     {meta.label}
                   </span>
                 </div>
