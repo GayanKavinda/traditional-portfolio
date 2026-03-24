@@ -20,9 +20,9 @@ const Sep = () => (
 function withSeps(skills: typeof ROW_1, runIndex: number): React.ReactNode[] {
   return skills.flatMap((s, i) => {
     const nodes: React.ReactNode[] = [
-      <SkillChip key={`${s.id}-${runIndex}`} name={s.name} accentColor={CAT_META[s.cat].color} />,
+      <SkillChip key={`${s.name}-${runIndex}`} name={s.name} accentColor={CAT_META[s.cat].color} />,
     ];
-    if (i < skills.length - 1) nodes.push(<Sep key={`sep-${s.id}-${runIndex}`} />);
+    if (i < skills.length - 1) nodes.push(<Sep key={`sep-${s.name}-${runIndex}`} />);
     return nodes;
   });
 }
@@ -30,11 +30,11 @@ function withSeps(skills: typeof ROW_1, runIndex: number): React.ReactNode[] {
 // Render a single track row four times with 10px spacing acting as a logical separator block
 function renderTrackItems(skills: typeof ROW_1) {
   const items: React.ReactNode[] = [];
+  // Use 4 copies to ensure track width exceeds viewport width (seamlessness insurance)
   for (let r = 0; r < 4; r++) {
     items.push(...withSeps(skills, r));
-    if (r < 3) {
-      items.push(<div key={`gap-${r}`} style={{ width: '10px', flexShrink: 0 }} />);
-    }
+    // Always add a gap after each copy to maintain periodicity at all times
+    items.push(<div key={`gap-${r}`} style={{ width: '40px', flexShrink: 0 }} />);
   }
   return items;
 }

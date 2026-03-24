@@ -103,7 +103,7 @@ export const SystemPillars = () => {
           </div>
 
           {/* Name + mission */}
-          <h3 className="font-playfair text-[17px] font-bold text-foreground leading-tight">
+          <h3 className="font-jakarta text-[17px] font-bold text-foreground leading-tight tracking-tight">
             {p.name}
           </h3>
           <p

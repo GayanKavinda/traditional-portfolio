@@ -15,6 +15,7 @@ export default {
         playfair: ['"Playfair Display"', 'serif'],
         mono: ['"DM Mono"', 'monospace'],
         sans: ['"Instrument Sans"', 'sans-serif'],
+        jakarta: ['"Plus Jakarta Sans"', 'sans-serif'],
       },
       colors: {
         border: "hsl(var(--border))",

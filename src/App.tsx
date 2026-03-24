@@ -16,7 +16,7 @@ const App = () => (
   <ThemeProvider defaultTheme="dark" storageKey="gy-theme">
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
-        <PreLoader>
+        {/* <PreLoader> */}
           <CustomCursor />
           <ResumeButton />
           <BrowserRouter>
@@ -26,7 +26,7 @@ const App = () => (
               <Route path="*" element={<NotFound />} />
             </Routes>
           </BrowserRouter>
-        </PreLoader>
+        {/* </PreLoader> */}
       </TooltipProvider>
     </QueryClientProvider>
   </ThemeProvider>

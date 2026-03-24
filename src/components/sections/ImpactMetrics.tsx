@@ -59,7 +59,7 @@ const ImpactMetrics = () => {
               className="flex flex-col items-center text-center md:px-6 relative"
             >
               <span
-                className="metric-val font-playfair text-[clamp(36px,7vw,56px)] font-bold text-gold leading-tight"
+                className="metric-val font-jakarta text-[clamp(36px,7vw,56px)] font-bold text-gold leading-tight tracking-tighter"
                 data-raw={m.value.replace(/[^0-9.]/g, '')}
                 data-suffix={m.suffix}
                 data-display={m.value + m.suffix}

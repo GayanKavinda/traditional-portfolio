@@ -12,19 +12,23 @@ export const CAT_META: Record<string, { label: string; color: string; pfx: strin
   data:  { label: 'Data',           color: GD, pfx: GDP },
 };
 
+export const rm = () =>
+  typeof window !== 'undefined' &&
+  window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
 export const SKILLS = [
-  { id: 0,  name: 'TypeScript', cat: 'fe',    pct: 92 },
-  { id: 1,  name: 'React',      cat: 'fe',    pct: 88 },
-  { id: 2,  name: 'Next.js',    cat: 'fe',    pct: 80 },
-  { id: 3,  name: 'Node.js',    cat: 'be',    pct: 85 },
-  { id: 4,  name: 'Python',     cat: 'be',    pct: 78 },
-  { id: 5,  name: 'GraphQL',    cat: 'be',    pct: 72 },
-  { id: 6,  name: 'AWS',        cat: 'infra', pct: 82 },
-  { id: 7,  name: 'Docker',     cat: 'infra', pct: 80 },
-  { id: 8,  name: 'Kubernetes', cat: 'infra', pct: 70 },
-  { id: 9,  name: 'PostgreSQL', cat: 'data',  pct: 75 },
-  { id: 10, name: 'Redis',      cat: 'data',  pct: 68 },
-  { id: 11, name: 'MongoDB',    cat: 'data',  pct: 65 },
+  { name: 'TypeScript', cat: 'fe',    pct: 92 },
+  { name: 'React',      cat: 'fe',    pct: 88 },
+  { name: 'Next.js',    cat: 'fe',    pct: 80 },
+  { name: 'Node.js',    cat: 'be',    pct: 85 },
+  { name: 'Python',     cat: 'be',    pct: 78 },
+  { name: 'GraphQL',    cat: 'be',    pct: 72 },
+  { name: 'AWS',        cat: 'infra', pct: 82 },
+  { name: 'Docker',     cat: 'infra', pct: 80 },
+  { name: 'Kubernetes', cat: 'infra', pct: 70 },
+  { name: 'PostgreSQL', cat: 'data',  pct: 75 },
+  { name: 'Redis',      cat: 'data',  pct: 68 },
+  { name: 'MongoDB',    cat: 'data',  pct: 65 },
 ];
 
 export const ICON_MAP: Record<string, string> = {

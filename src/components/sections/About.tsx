@@ -28,11 +28,15 @@ const About = () => {
 
   useEffect(() => {
     const ctx = gsap.context(() => {
+      // Parallax effect for mask image - enhanced visibility
       gsap.to(maskRef.current!, {
-        y: -60, ease: 'none',
+        y: -200,
+        ease: 'none',
         scrollTrigger: {
           trigger: sectionRef.current!,
-          start: 'top bottom', end: 'bottom top', scrub: 1.2,
+          start: 'top bottom',
+          end: 'bottom top',
+          scrub: 1,
         },
       });
       gsap.from(photoRef.current!, {
@@ -79,10 +83,15 @@ const About = () => {
 
           {/* Bio */}
           <div>
-            <p className="about-text-anim font-mono text-[11px] uppercase tracking-[0.15em] text-gold">// About Me</p>
-            <h2 className="about-text-anim font-playfair text-[clamp(28px,5vw,42px)] text-foreground mt-2 leading-[1.1]">
-              I code with intent.
+            <p className="about-text-anim font-mono text-[11px] uppercase tracking-[0.2em] text-[#E8A820] mb-3">// About Me</p>
+            <h2 className="about-text-anim font-jakarta font-extrabold text-[clamp(32px,5vw,44px)] text-foreground tracking-tight">
+              I code with <em className="font-playfair italic font-medium text-crimson">intent</em>.
             </h2>
+            {/* Minimal divider */}
+            <div className="flex items-start gap-3 mt-5">
+              <div className="w-12 h-px bg-gradient-to-r from-transparent to-[#C41E3A]" />
+              <div className="w-2 h-2 rounded-full bg-[#E8A820]" />
+            </div>
             <div className="about-text-anim mt-5 md:mt-6 space-y-4 font-sans text-[14px] md:text-[16px] leading-[1.7] text-foreground/70">
               <p>With over a decade in the trenches, I've learned that great software isn't just about clean code — it's about understanding the problem deeply before writing a single line.</p>
               <p>I specialize in distributed systems, cloud architecture, and building developer tools that teams actually enjoy using. My approach combines battle-tested engineering principles with a relentless focus on user experience.</p>
@@ -93,7 +102,7 @@ const About = () => {
             <div className="about-text-anim stats-row grid grid-cols-3 gap-4 md:gap-6 mt-8 md:mt-10 border-t border-border pt-6 md:pt-8">
               {stats.map(s => (
                 <div key={s.label}>
-                  <p className="font-playfair text-[clamp(28px,5vw,44px)] text-crimson leading-none">{s.num}</p>
+                  <p className="font-jakarta font-bold text-[clamp(28px,5vw,44px)] text-crimson leading-none tracking-tighter">{s.num}</p>
                   <p className="font-mono text-[9px] md:text-[11px] text-gold uppercase tracking-wider mt-1">{s.label}</p>
                   <p className="font-sans text-[11px] md:text-[13px] text-foreground/40 mt-0.5">{s.sub}</p>
                 </div>

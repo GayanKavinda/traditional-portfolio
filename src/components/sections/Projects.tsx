@@ -51,10 +51,17 @@ const Projects = () => {
 
   return (
     <section id="projects" ref={ref} className="py-[80px] md:py-[100px] mt-[-60px] relative z-20 bg-background">
-      <div className="text-center mb-10 md:mb-16 px-6">
-        <p className="font-mono text-[11px] uppercase tracking-[0.15em] text-gold">// Featured Work</p>
-        <h2 className="font-playfair text-[clamp(32px,5vw,48px)] text-foreground mt-2">Selected Work</h2>
-        <div className="w-[60px] h-[2px] bg-crimson mx-auto mt-4" />
+      <div className="text-center mb-12 md:mb-16 px-6">
+        <p className="font-mono text-[11px] uppercase tracking-[0.2em] text-[#E8A820] mb-3">// Featured Work</p>
+        <h2 className="font-jakarta font-extrabold text-[clamp(32px,5vw,44px)] text-foreground tracking-tight">
+          Selected <span className="font-playfair italic font-medium text-crimson">Projects</span>
+        </h2>
+        {/* Minimal divider */}
+        <div className="flex items-center justify-center gap-3 mt-5">
+          <div className="w-12 h-px bg-gradient-to-r from-transparent to-[#C41E3A]" />
+          <div className="w-2 h-2 rounded-full bg-[#E8A820]" />
+          <div className="w-12 h-px bg-gradient-to-l from-transparent to-[#C41E3A]" />
+        </div>
       </div>
 
       <div className="max-w-[1200px] mx-auto px-6 md:px-10">
@@ -75,7 +82,7 @@ const Projects = () => {
           </div>
           <div className="p-5 md:p-7 flex flex-col md:flex-row md:justify-between md:items-start gap-4">
             <div className="flex-1">
-              <h3 className="font-playfair text-[20px] md:text-[24px] text-foreground">{heroProject.name}</h3>
+              <h3 className="font-jakarta font-bold text-[20px] md:text-[24px] text-foreground tracking-tight">{heroProject.name}</h3>
               <p className="font-sans text-[14px] md:text-[15px] text-foreground/50 mt-1">{heroProject.desc}</p>
               {/* Impact metrics row */}
               <div className="flex gap-4 mt-3 flex-wrap">
@@ -133,7 +140,7 @@ const Projects = () => {
               <div className="absolute bottom-2 right-4 font-playfair text-[50px] md:text-[60px] font-black text-crimson/[0.06] leading-none select-none">02</div>
             </div>
             <div className="p-4 md:p-5">
-              <h3 className="font-playfair text-[18px] md:text-[22px] text-foreground">{sideProject.name}</h3>
+              <h3 className="font-jakarta font-bold text-[18px] md:text-[22px] text-foreground tracking-tight">{sideProject.name}</h3>
               <p className="font-sans text-[13px] md:text-[15px] text-foreground/50 mt-1">{sideProject.desc}</p>
               <div className="flex gap-[6px] mt-3 flex-wrap">
                 {sideProject.tags.map(t => (

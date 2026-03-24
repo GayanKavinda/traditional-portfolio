@@ -40,9 +40,17 @@ const Contact = () => {
       <img ref={dancerRef} src={dancerImg} alt="" className="absolute bottom-0 right-0 h-[70%] w-auto pointer-events-none z-0" style={{ mixBlendMode: isDark ? 'screen' : 'multiply', opacity: isDark ? 0.3 : 0.12 }} />
 
       <div className="relative z-[1] max-w-[580px] mx-auto px-10 text-center">
-        <p className="font-mono text-[11px] uppercase tracking-[0.15em] text-gold">// Get In Touch</p>
-        <h2 className="font-playfair text-[48px] text-foreground mt-2">Let's Build Something.</h2>
-        <p className="font-sans text-[16px] text-foreground/50 mt-4 max-w-[440px] mx-auto">
+        <p className="font-mono text-[11px] uppercase tracking-[0.2em] text-[#E8A820] mb-3">// Get In Touch</p>
+        <h2 className="font-jakarta font-extrabold text-[clamp(32px,5vw,44px)] text-foreground tracking-tight">
+          Let's Build <em className="font-playfair italic font-medium text-crimson">Something</em>.
+        </h2>
+        {/* Minimal divider */}
+        <div className="flex items-center justify-center gap-3 mt-5">
+          <div className="w-12 h-px bg-gradient-to-r from-transparent to-[#C41E3A]" />
+          <div className="w-2 h-2 rounded-full bg-[#E8A820]" />
+          <div className="w-12 h-px bg-gradient-to-l from-transparent to-[#C41E3A]" />
+        </div>
+        <p className="font-sans text-[15px] text-foreground/50 mt-4 max-w-[440px] mx-auto">
           Have a project in mind or want to discuss an opportunity? I'd love to hear from you.
         </p>
 
@@ -76,8 +84,8 @@ const Contact = () => {
             value={form.message}
             onChange={e => setForm({ ...form, message: e.target.value })}
           />
-          <button className="contact-field w-full bg-crimson text-white font-mono text-[13px] py-3 rounded-lg hover:brightness-110 transition-all relative z-10" type="submit">
-            Send Message →
+          <button className="contact-field w-full bg-crimson text-white font-jakarta font-bold text-[13px] py-3 rounded-lg hover:brightness-110 transition-all relative z-10 tracking-wide" type="submit">
+            Send Message <span className="font-sans ml-1">→</span>
           </button>
         </form>
 

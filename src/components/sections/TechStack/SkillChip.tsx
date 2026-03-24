@@ -25,10 +25,5 @@ export const SkillChip = ({ name, accentColor }: SkillChipProps) => (
     <span className="text-[11.5px] font-medium text-foreground leading-none text-center whitespace-nowrap">
       {name}
     </span>
-    {/* Category accent bar */}
-    <div
-      className="absolute bottom-0 left-1/2 -translate-x-1/2 h-[2px] rounded-t-sm opacity-50 group-hover:opacity-100 group-hover:w-10 transition-all duration-200"
-      style={{ background: accentColor, width: '24px' }}
-    />
   </div>
 );

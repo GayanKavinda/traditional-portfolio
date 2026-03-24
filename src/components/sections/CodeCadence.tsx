@@ -344,9 +344,14 @@ const CodeCadence = () => {
 
       <div className="relative z-[2] max-w-[1100px] mx-auto px-10">
         <div className="text-center">
-          <p className="font-mono text-[11px] uppercase tracking-[0.15em] text-gold">// Real-time Activity</p>
-          <h2 className="font-playfair text-[48px] text-foreground mt-2">Code Cadence</h2>
-          <div className="w-[60px] h-[2px] bg-crimson mx-auto mt-4" />
+          <p className="font-mono text-[11px] uppercase tracking-[0.2em] text-[#E8A820] mb-3">// Real-time Activity</p>
+          <h2 className="font-jakarta font-extrabold text-[clamp(32px,5vw,44px)] text-foreground tracking-tight">Code <em className="font-playfair italic font-medium text-crimson">Cadence</em></h2>
+          {/* Minimal divider */}
+          <div className="flex items-center justify-center gap-3 mt-5">
+            <div className="w-12 h-px bg-gradient-to-r from-transparent to-[#C41E3A]" />
+            <div className="w-2 h-2 rounded-full bg-[#E8A820]" />
+            <div className="w-12 h-px bg-gradient-to-l from-transparent to-[#C41E3A]" />
+          </div>
         </div>
 
         <div className="grid grid-cols-[1fr_240px] gap-[60px] mt-14 max-lg:grid-cols-1">
@@ -440,7 +445,7 @@ const CodeCadence = () => {
                     key={s.label}
                     className="stat-card rounded-[8px] border border-border p-3 text-center bg-card"
                   >
-                    <p className="font-playfair text-[24px] text-gold">{s.num}</p>
+                    <p className="font-jakarta font-bold text-[24px] text-gold tracking-tight">{s.num}</p>
                     <p className="font-mono text-[9px] uppercase tracking-wider mt-1 text-foreground/40">
                       {s.label}
                     </p>

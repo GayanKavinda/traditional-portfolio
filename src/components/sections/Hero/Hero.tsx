@@ -121,15 +121,15 @@ const Hero = () => {
         </p>
 
         {/* Name */}
-        <h1 className="hero-text-anim font-playfair font-black leading-none mt-4 text-foreground
-                        text-[clamp(52px,12vw,72px)]">
+        <h1 className="hero-text-anim font-jakarta font-extrabold leading-none mt-4 text-foreground
+                        text-[clamp(52px,12vw,72px)] tracking-tight">
           Gara Yaka
         </h1>
 
         {/* Tagline */}
-        <h2 className="hero-text-anim font-playfair font-black leading-none text-crimson
-                        text-[clamp(28px,7vw,72px)]">
-          Crafting Systems.
+        <h2 className="hero-text-anim font-jakarta font-bold leading-none text-crimson
+                        text-[clamp(28px,7vw,70px)] tracking-tight">
+          Crafting <em className="font-playfair italic font-medium">Systems</em>.
         </h2>
 
         {/* Description — shorter on mobile to avoid overflow */}

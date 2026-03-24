@@ -13,7 +13,7 @@ import { useEffect, useRef, useState } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useTheme } from '@/context/ThemeProvider';
-import { CR, GD, CRP, GDP, CAT_META, SKILLS } from './constants';
+import { CR, GD, CRP, GDP, CAT_META, SKILLS, rm } from './constants';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -26,11 +26,6 @@ const CATS = [
 ] as const;
 
 type Skill = typeof SKILLS[0];
-
-// ── Helpers ──────────────────────────────────────────────────────────────────
-const rm = () =>
-  typeof window !== 'undefined' &&
-  window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
 const easeOut4 = (t: number) => 1 - Math.pow(1 - t, 4);
 
@@ -214,21 +209,16 @@ export const TechGraph = () => {
         ctx.fillStyle    = isH ? dc : T.lbl;
         ctx.font         = (isH ? '700' : '600') + ' 12px "Playfair Display", serif';
         ctx.fillText(s.name, lx, ly + dy);
-
-        ctx.font      = '400 10px "DM Mono", monospace';
-        ctx.fillStyle = isH ? dc : T.tick;
-        ctx.fillText(s.pct + '%', lx, ly + dy + 13);
       });
 
-      // Ring percentage ticks
+      // Ring background indicators (no numbers)
       [20, 40, 60, 80].forEach(pct => {
         const r = (pct / 100) * maxR;
         const [lx, ly] = polarPt(cx, cy, r, 0, n);
-        ctx.font         = '400 9px "DM Mono", monospace';
-        ctx.textAlign    = 'left';
-        ctx.textBaseline = 'bottom';
-        ctx.fillStyle    = T.tick;
-        ctx.fillText(String(pct), lx + 4, ly - 3);
+        ctx.beginPath();
+        ctx.arc(lx, ly, 1.5, 0, Math.PI * 2);
+        ctx.fillStyle = T.tick + '40';
+        ctx.fill();
       });
     }
 
@@ -417,7 +407,7 @@ export const TechGraph = () => {
               <div className="font-playfair text-[15px] font-bold text-foreground mb-2.5">
                 {hovSkill.name}
               </div>
-              <div className="h-[2.5px] bg-muted rounded overflow-hidden mb-1.5">
+              <div className="h-[2.5px] bg-muted rounded overflow-hidden mb-1">
                 <div
                   className="h-full rounded transition-all duration-300"
                   style={{
@@ -425,9 +415,6 @@ export const TechGraph = () => {
                     background: CAT_META[hovSkill.cat]?.color ?? CR,
                   }}
                 />
-              </div>
-              <div className="font-mono text-[10px] text-muted-foreground">
-                {hovSkill.pct}% proficiency
               </div>
             </div>
           )}

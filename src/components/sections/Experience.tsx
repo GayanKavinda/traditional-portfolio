@@ -68,9 +68,17 @@ const Experience = () => {
       />
       <div className="absolute inset-0 z-[1]" style={{ background: 'hsl(var(--background) / 0.92)' }} />
 
-      <div className="relative z-[2] text-center mb-10 md:mb-16">
-        <p className="font-mono text-[11px] uppercase tracking-[0.15em] text-gold">// Career</p>
-        <h2 className="font-playfair text-[clamp(32px,5vw,48px)] text-foreground mt-2">Experience</h2>
+      <div className="relative z-[2] text-center mb-12 md:mb-16">
+        <p className="font-mono text-[11px] uppercase tracking-[0.2em] text-[#E8A820] mb-3">// Career</p>
+        <h2 className="font-jakarta font-extrabold text-[clamp(32px,5vw,44px)] text-foreground tracking-tight">
+          Professional <span className="font-playfair italic font-medium text-crimson">Experience</span>
+        </h2>
+        {/* Minimal divider */}
+        <div className="flex items-center justify-center gap-3 mt-5">
+          <div className="w-12 h-px bg-gradient-to-r from-transparent to-[#C41E3A]" />
+          <div className="w-2 h-2 rounded-full bg-[#E8A820]" />
+          <div className="w-12 h-px bg-gradient-to-l from-transparent to-[#C41E3A]" />
+        </div>
       </div>
 
       {/* ── Mobile timeline — single column with left accent border ── */}
@@ -89,7 +97,7 @@ const Experience = () => {
                 className={`rounded-lg border border-border p-4 bg-card ${e.current ? 'border-l-[3px] border-l-crimson' : ''}`}
               >
                 <p className="font-mono text-[12px] text-gold">{e.company}</p>
-                <p className="font-playfair text-[17px] text-foreground mt-0.5">{e.role}</p>
+                <p className="font-jakarta font-bold text-[17px] text-foreground mt-0.5 tracking-tight">{e.role}</p>
                 <p className="font-mono text-[10px] text-foreground/40 mt-0.5">{e.period}</p>
                 <ul className="mt-3 space-y-1.5">
                   {e.bullets.map((b, j) => (
@@ -123,7 +131,7 @@ const Experience = () => {
                   className={`rounded-lg border border-border p-5 bg-card transition-all duration-300 hover:scale-[1.02] ${e.current ? 'border-l-[3px] border-l-crimson border-crimson/35' : ''}`}
                 >
                   <p className="font-mono text-[13px] text-gold">{e.company}</p>
-                  <p className="font-playfair text-[18px] text-foreground mt-1">{e.role}</p>
+                  <p className="font-jakarta font-bold text-[18px] text-foreground mt-1 tracking-tight">{e.role}</p>
                   <p className="font-mono text-[11px] text-foreground/40">{e.period}</p>
                   <ul className="mt-3 space-y-1.5">
                     {e.bullets.map((b, j) => (

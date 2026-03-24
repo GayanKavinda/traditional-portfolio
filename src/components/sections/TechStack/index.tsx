@@ -13,15 +13,12 @@ import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { SkillMarquee } from './SkillMarquee';
 import { SystemPillars } from '../SystemPillars';
-import { SKILLS, CAT_META } from './constants';
+import { TechGraph } from './TechGraph';
+import { SKILLS, CAT_META, rm } from './constants';
 
 gsap.registerPlugin(ScrollTrigger);
 
-const rm = () =>
-  typeof window !== 'undefined' &&
-  window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-
-const TOP_4 = [...SKILLS].sort((a, b) => b.pct - a.pct).slice(0, 4);
+// TOP_4 removed (dead code)
 
 // ── Animated count-up ────────────────────────────────────────────────────────
 function CountUp({ target, suffix = '' }: { target: number; suffix?: string }) {
@@ -44,17 +41,7 @@ const TechStack = () => {
   const sectionRef = useRef<HTMLElement>(null);
 
   useEffect(() => {
-    if (rm()) return;
-    const ctx = gsap.context(() => {
-      gsap.utils.toArray<HTMLElement>('.feat-bar').forEach(el => {
-        gsap.to(el, {
-          width: el.dataset.width,
-          duration: 1.1, ease: 'power3.out',
-          scrollTrigger: { trigger: el, start: 'top 88%', once: true },
-        });
-      });
-    }, sectionRef);
-    return () => ctx.revert();
+    // feat-bar animation removed (no target elements)
   }, []);
 
   return (
@@ -78,9 +65,9 @@ const TechStack = () => {
         <div className="flex justify-center mb-10 md:mb-14">
           <div className="inline-flex border border-border rounded-2xl overflow-hidden divide-x divide-border">
             {[
-              { target: SKILLS.length, suffix: '',  label: 'Technologies' },
-              { target: 4,             suffix: '',  label: 'Pillars'      },
-              { target: 10,            suffix: '+', label: 'Years'        },
+              { target: SKILLS.length, suffix: '',  label: 'Technologies'   },
+              { target: 99.9,          suffix: '%', label: 'Uptime Focused' },
+              { target: 10,            suffix: '+', label: 'Years Experience' },
             ].map((s, i) => (
               <div key={i} className="flex flex-col items-center justify-center px-6 md:px-10 py-4 md:py-5 min-w-[90px] md:min-w-[120px]">
                 <div className="font-playfair text-[24px] md:text-[28px] font-bold text-foreground leading-none">
@@ -99,8 +86,8 @@ const TechStack = () => {
           <SkillMarquee />
         </div>
 
-        {/* ── System Pillars — replaces radar ───────────────────────── */}
-        <div className="grid grid-cols-1 lg:grid-cols-[1fr_320px] gap-8 md:gap-10 items-start">
+        {/* ── System Pillars & TechGraph ─────────────────────────── */}
+        <div className="grid grid-cols-1 lg:grid-cols-[1.1fr_1fr] gap-10 md:gap-16 items-center">
 
           {/* Left — pillars */}
           <div>
@@ -110,55 +97,13 @@ const TechStack = () => {
             <SystemPillars />
           </div>
 
-          {/* Right — top-4 skills */}
-          <div>
-            <p className="font-mono text-[9px] tracking-[.16em] uppercase text-muted-foreground/50 mb-4">
-              // Top skills
+          {/* Right — TechGraph Radar Chart */}
+          <div className="relative">
+            <p className="font-mono text-[9px] tracking-[.16em] uppercase text-muted-foreground/50 mb-6 lg:text-right">
+              // Proficiency Graph
             </p>
-            <div className="grid grid-cols-2 gap-3">
-              {TOP_4.map(s => {
-                const meta = CAT_META[s.cat];
-                return (
-                  <div
-                    key={s.id}
-                    className="bg-card border border-border rounded-2xl p-[16px] transition-colors duration-200 hover:border-border/60"
-                  >
-                    <div className="flex items-start justify-between mb-3">
-                      <div>
-                        <div className="font-playfair text-[13px] font-bold text-foreground leading-tight">
-                          {s.name}
-                        </div>
-                        <div
-                          className="font-mono text-[8px] tracking-[.1em] uppercase mt-1"
-                          style={{ color: meta.color }}
-                        >
-                          {meta.label}
-                        </div>
-                      </div>
-                    </div>
-                    {/* Thin bar — kept for scannability, no percentage number shown */}
-                    <div className="h-[2px] bg-border rounded overflow-hidden">
-                      <div
-                        className="feat-bar h-full rounded"
-                        data-width={s.pct + '%'}
-                        style={{ width: 0, background: meta.color }}
-                      />
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-
-            {/* Domain legend */}
-            <div className="mt-5 flex flex-wrap gap-x-5 gap-y-2">
-              {Object.entries(CAT_META).map(([key, meta]) => (
-                <div key={key} className="flex items-center gap-2">
-                  <div className="w-[5px] h-[5px] rounded-full" style={{ background: meta.color }} />
-                  <span className="font-mono text-[8px] tracking-[.08em] uppercase text-muted-foreground/50">
-                    {meta.label}
-                  </span>
-                </div>
-              ))}
+            <div className="flex justify-center lg:justify-end">
+              <TechGraph />
             </div>
           </div>
 
