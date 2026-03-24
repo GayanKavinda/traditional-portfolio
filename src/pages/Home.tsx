@@ -7,7 +7,7 @@ import Projects              from '@/components/sections/Projects';
 import TechStack             from '@/components/sections/TechStack/index';
 import Experience            from '@/components/sections/Experience';
 import About                 from '@/components/sections/About';
-import EngineeringPhilosophy from '@/components/sections/EngineeringPhilosophy';
+import EngineeringPhilosophy from '@/components/sections/EngineeringPhilosophy/index';
 import Certifications        from '@/components/sections/Certifications';
 import Achievements          from '@/components/sections/Achievements';
 import Testimonials          from '@/components/sections/Testimonials';
