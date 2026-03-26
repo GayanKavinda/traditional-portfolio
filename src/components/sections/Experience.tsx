@@ -8,6 +8,7 @@ import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import crowdImg from '@/assets/crowd.png';
 import { useTheme } from '@/context/ThemeProvider';
+import { TracingBeam } from '@/components/ui/tracing-beam';
 
 const EASING = 'cubic-bezier(0.16, 1, 0.3, 1)';
 
@@ -81,17 +82,17 @@ const Experience = () => {
         </div>
       </div>
 
-      {/* ── Mobile timeline — single column with left accent border ── */}
-      <div className="md:hidden relative z-[2] max-w-[600px] mx-auto px-6">
-        <div className="border-l-2 border-crimson/25 pl-6 space-y-8">
+      {/* ── content wrapped in Tracing Beam ── */}
+      <TracingBeam className="px-6 relative z-[2]">
+        {/* ── Mobile timeline — single column with tracing beam ── */}
+        <div className="md:hidden max-w-[900px] w-full mx-auto mt-4 px-2">
+          <div className="pl-[44px] pr-2 space-y-8">
           {entries.map((e, i) => (
             <div
               key={e.company}
               ref={el => { entryRefs.current[i] = el; }}
               className="relative"
             >
-              {/* Timeline node */}
-              <div className="absolute -left-[31px] top-4 w-[10px] h-[10px] rounded-full bg-crimson" />
 
               <div
                 className={`rounded-lg border border-border p-4 bg-card ${e.current ? 'border-l-[3px] border-l-crimson' : ''}`}
@@ -119,13 +120,11 @@ const Experience = () => {
 
       {/* ── Desktop zigzag layout — original preserved ── */}
       <div className="hidden md:block relative z-[2] max-w-[900px] mx-auto px-10">
-        <div className="absolute left-1/2 top-0 bottom-0 w-px" style={{ background: 'rgba(192,39,45,0.3)' }} />
         {entries.map((e, i) => {
           const isLeft = i % 2 === 0;
           return (
             <div key={e.company} className="relative mb-16" ref={el => { entryRefs.current[i] = el; }}>
-              <div className="absolute left-1/2 -translate-x-1/2 w-[10px] h-[10px] rounded-full bg-crimson z-10" style={{ top: 20 }} />
-              <div className="absolute left-1/2 -translate-x-1/2 font-mono text-[11px] text-gold z-10" style={{ top: 36 }}>{e.year}</div>
+              <div className="absolute left-1/2 -translate-x-1/2 font-mono text-[11px] text-gold z-10 bg-background/80 backdrop-blur-sm px-2 py-1 rounded-md border border-border" style={{ top: 20 }}>{e.year}</div>
               <div className={`w-[44%] ${isLeft ? 'mr-auto pr-10 text-right' : 'ml-auto pl-10'}`}>
                 <div
                   className={`rounded-lg border border-border p-5 bg-card transition-all duration-300 hover:scale-[1.02] ${e.current ? 'border-l-[3px] border-l-crimson border-crimson/35' : ''}`}
@@ -150,7 +149,8 @@ const Experience = () => {
             </div>
           );
         })}
-      </div>
+        </div>
+      </TracingBeam>
     </section>
   );
 };
