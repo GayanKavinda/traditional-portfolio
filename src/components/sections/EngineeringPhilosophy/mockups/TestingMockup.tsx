@@ -38,7 +38,7 @@ export const TestingMockup = () => {
         ease: 'power2.out',
         transformOrigin: 'left center',
       }, 0.6);
-    }, svgRef);
+    }, svgRef.current!);
 
     return () => ctx.revert();
   }, []);

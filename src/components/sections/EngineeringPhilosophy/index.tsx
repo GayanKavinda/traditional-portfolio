@@ -46,9 +46,10 @@ const PRINCIPLES = [
 ];
 
 const EngineeringPhilosophy = () => {
-  const ref = useRef<HTMLDivElement>(null);
+  const ref = useRef<HTMLElement>(null);
 
   useEffect(() => {
+    if (!ref.current) return;
     const ctx = gsap.context(() => {
       gsap.from('.phil-step', {
         y: 28,
@@ -62,7 +63,7 @@ const EngineeringPhilosophy = () => {
           once: true,
         },
       });
-    }, ref);
+    }, ref.current);
     return () => ctx.revert();
   }, []);
 

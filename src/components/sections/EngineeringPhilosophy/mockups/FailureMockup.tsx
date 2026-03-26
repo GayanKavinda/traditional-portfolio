@@ -47,7 +47,7 @@ export const FailureMockup = () => {
         ease: 'power2.out',
         stagger: 0.15,
       }, 1.0);
-    }, svgRef);
+    }, svgRef.current!);
 
     return () => ctx.revert();
   }, []);

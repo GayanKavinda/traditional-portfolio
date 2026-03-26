@@ -65,7 +65,7 @@ export const ObservabilityMockup = () => {
         },
         0
       );
-    }, svgRef);
+    }, svgRef.current!);
 
     return () => ctx.revert();
   }, []);

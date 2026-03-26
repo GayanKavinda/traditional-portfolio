@@ -39,7 +39,7 @@ export const SimplicityMockup = () => {
         yoyo: true,
         ease: 'steps(1)',
       }, 1.3);
-    }, svgRef);
+    }, svgRef.current!);
 
     return () => ctx.revert();
   }, []);
