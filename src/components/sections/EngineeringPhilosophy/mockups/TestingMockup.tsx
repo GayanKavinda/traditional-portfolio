@@ -1,4 +1,4 @@
-// src/components/sections/EngineeringPhilosophy/mockups/TestingMockup.tsx
+//src/components/sections/EngineeringPhilosophy/mockups/TestingMockup.tsx
 
 import { useEffect, useRef } from 'react';
 import { gsap } from 'gsap';

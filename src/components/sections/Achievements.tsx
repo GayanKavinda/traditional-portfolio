@@ -1,4 +1,4 @@
-// src/components/Achievements.tsx
+// src/components/sections/Achievements.tsx
 // Modern redesign: Glassmorphic cards with subtle gradient borders, animated icon badges, and smooth hover lifts
 
 import { useEffect, useRef } from 'react';

@@ -1,4 +1,4 @@
-// src/components/About.tsx
+//src/components/sections/About.tsx
 // Changes from original:
 // - Replaced "∞ Lines of Code" with "12+ Systems Architected" (senior impact metric)
 // - Replaced "10+ Years" stat with cleaner layout

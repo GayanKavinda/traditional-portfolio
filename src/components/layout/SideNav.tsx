@@ -1,9 +1,4 @@
-// src/components/SideNav.tsx
-// Sticky side navigation — minimal vertical dot/label strip.
-// Shows on desktop only (hidden on mobile — uses too much space).
-// Dots highlight as sections scroll into view via IntersectionObserver.
-// Labels appear on hover. Clicking scrolls to the section.
-// Add <SideNav /> to Home.tsx (renders outside the section flow, fixed position).
+//src/components/layout/SideNav.tsx
 
 import { useEffect, useRef, useState } from 'react';
 
@@ -11,10 +6,13 @@ const SECTIONS = [
   { id: 'home',        label: 'Hero'          },
   { id: 'projects',    label: 'Work'          },
   { id: 'skills',      label: 'Stack'         },
+  { id: 'timeline',    label: 'Timeline'      },  // new
   { id: 'experience',  label: 'Experience'    },
   { id: 'about',       label: 'About'         },
   { id: 'philosophy',  label: 'Philosophy'    },
+  { id: 'opensource',  label: 'Open Source'   },  // new
   { id: 'testimonials',label: 'Testimonials'  },
+  { id: 'blog',        label: 'Writing'       },  // new
   { id: 'contact',     label: 'Contact'       },
 ];
 

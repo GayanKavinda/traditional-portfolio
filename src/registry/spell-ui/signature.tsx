@@ -1,3 +1,5 @@
+//src/registry/spell-ui/signature.tsx
+
 "use client";
 import { useEffect, useId, useState } from "react";
 import { motion } from "motion/react";

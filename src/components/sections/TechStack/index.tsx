@@ -1,4 +1,4 @@
-// src/components/TechStack/index.tsx
+//src/components/sections/TechStack/index.tsx
 // Upgraded "The Stack" section.
 // KEY CHANGES from previous version:
 //   - Radar chart replaced with SystemPillars (4 architectural pillars)

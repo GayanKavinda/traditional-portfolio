@@ -1,4 +1,4 @@
-//src/components/ResumeButton.tsx
+//src/components/common/ResumeButton.tsx
 
 const ResumeButton = () => (
   <button

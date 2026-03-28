@@ -1,4 +1,4 @@
-//src/components/CodeCadence.tsx
+//src/components/sections/CodeCadence.tsx
 
 import { useEffect, useRef, useState, useMemo } from 'react';
 import { gsap } from 'gsap';

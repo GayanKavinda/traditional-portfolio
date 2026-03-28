@@ -1,4 +1,4 @@
-// src/components/TechStack/TechGraph.tsx
+//src/components/sections/TechStack/TechGraph.tsx
 // Premium radar chart component.
 // - Crimson #C41E3A + Gold #D4891A (exact index.css palette)
 // - Playfair Display axis labels, DM Mono percentage ticks

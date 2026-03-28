@@ -1,3 +1,5 @@
+//src/components/layout/PreLoader.tsx
+
 import { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Signature } from '@/registry/spell-ui/signature';

@@ -1,4 +1,4 @@
-// src/components/sections/EngineeringPhilosophy/mockups/ObservabilityMockup.tsx
+//src/components/sections/EngineeringPhilosophy/mockups/ObservabilityMockup.tsx
 
 import { useEffect, useRef } from 'react';
 import { gsap } from 'gsap';

@@ -1,4 +1,4 @@
-// src/components/SystemPillars.tsx
+//src/components/sections/SystemPillars.tsx
 // Replaces the subjective radar chart.
 // Skills are grouped into 4 engineering pillars: Scalability, Observability, Security, Reliability.
 // Each pillar has an icon, a one-line mission statement, and the specific tech that fulfills it.

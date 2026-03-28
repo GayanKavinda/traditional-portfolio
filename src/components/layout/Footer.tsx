@@ -1,11 +1,11 @@
-// src/components/Footer.tsx
-// Gara Yaka Portfolio Footer — single unified design, pure white / pure dark themes
+//src/components/layout/Footer.tsx
 
 import { useEffect, useRef, useState } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import maskImg from '@/assets/mask.png';
 import { useTheme } from '@/context/ThemeProvider';
+import { QRCode } from '@/components/ui/qr-code';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -308,49 +308,82 @@ const Footer = () => {
           {/* ── Connect & Collaborate ───────────────────────────────────────── */}
           <div style={{ paddingLeft: '40px', paddingBottom: '32px' }}>
             <span style={colHead}>Connect & Collaborate</span>
-            <p style={{ fontSize: '14px', lineHeight: 1.6, color: t2, marginBottom: '22px', maxWidth: '300px' }}>
-              Have a visionary project? Let’s create something extraordinary together.
+            <p style={{ fontSize: '14px', lineHeight: 1.6, color: t2, marginBottom: '20px', maxWidth: '260px' }}>
+              Have a visionary project? Let's create something extraordinary together.
             </p>
-            
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '14px', alignItems: 'flex-start' }}>
-              <a
-                href="mailto:contact@garayaka.com"
-                style={{
-                  ...linkStyle('mail'),
-                  fontSize: '16px',
-                  fontWeight: 500,
-                  color: t1,
-                }}
-                onMouseEnter={() => setHov('mail')}
-                onMouseLeave={() => setHov(null)}
-              >
-                contact@garayaka.com
-                <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" strokeWidth="1.6" style={{ opacity: 0.6 }}>
-                  <path d="M1 11L11 1M11 1H4M11 1V8" />
-                </svg>
-              </a>
 
-              <a
-                href="#contact"
-                style={{
-                  display: 'inline-flex', alignItems: 'center', gap: '8px',
+            {/* QR Code + Email side by side */}
+            <div style={{ display: 'flex', alignItems: 'flex-start', gap: '18px', marginBottom: '18px' }}>
+              <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '7px', flexShrink: 0 }}>
+                <div style={{
+                  padding: '7px',
+                  background: '#FFFFFF',
+                  borderRadius: '10px',
+                  boxShadow: isDark
+                    ? '0 0 0 1px rgba(255,255,255,0.10), 0 4px 16px rgba(0,0,0,0.5)'
+                    : '0 0 0 1px rgba(0,0,0,0.08), 0 4px 12px rgba(0,0,0,0.08)',
+                  lineHeight: 0,
+                }}>
+                  <QRCode 
+                    value="https://garayaka.com" 
+                    size={100}
+                    logo={
+                      <img 
+                        src={maskImg} 
+                        alt="Gara Yaka Logo"
+                        style={{ width: '100%', height: '100%', objectFit: 'contain' }}
+                      />
+                    }
+                  />
+                </div>
+                <span style={{
                   fontFamily: "'DM Mono', monospace",
-                  fontSize: '11px', letterSpacing: '0.08em', textTransform: 'uppercase',
-                  color: hov === 'cta' ? '#fff' : t1,
-                  background: hov === 'cta' ? CRIMSON : 'transparent',
-                  border: `1px solid ${hov === 'cta' ? CRIMSON : hairline}`,
-                  borderRadius: '6px', padding: '12px 20px',
-                  textDecoration: 'none', transition: 'all 240ms cubic-bezier(0.4, 0, 0.2, 1)',
-                }}
-                onMouseEnter={() => setHov('cta')}
-                onMouseLeave={() => setHov(null)}
-              >
-                Start a conversation
-              </a>
+                  fontSize: '8.5px', letterSpacing: '0.12em',
+                  textTransform: 'uppercase', color: t3,
+                }}>
+                  Scan to visit
+                </span>
+              </div>
+
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', paddingTop: '4px' }}>
+                <span style={{ fontFamily: "'DM Mono', monospace", fontSize: '9px', letterSpacing: '0.14em', textTransform: 'uppercase', color: t3 }}>
+                  Or reach out directly
+                </span>
+                <a
+                  href="mailto:contact@garayaka.com"
+                  style={{ ...linkStyle('mail'), fontSize: '13px', fontWeight: 500, color: t1, wordBreak: 'break-all' }}
+                  onMouseEnter={() => setHov('mail')}
+                  onMouseLeave={() => setHov(null)}
+                >
+                  contact@garayaka.com
+                  <svg width="10" height="10" viewBox="0 0 12 12" fill="none" stroke="currentColor" strokeWidth="1.6" style={{ opacity: 0.5, flexShrink: 0 }}>
+                    <path d="M1 11L11 1M11 1H4M11 1V8" />
+                  </svg>
+                </a>
+              </div>
             </div>
+
+            {/* CTA button */}
+            <a
+              href="#contact"
+              style={{
+                display: 'inline-flex', alignItems: 'center', gap: '8px',
+                fontFamily: "'DM Mono', monospace",
+                fontSize: '11px', letterSpacing: '0.08em', textTransform: 'uppercase',
+                color: hov === 'cta' ? '#fff' : t1,
+                background: hov === 'cta' ? CRIMSON : 'transparent',
+                border: `1px solid ${hov === 'cta' ? CRIMSON : hairline}`,
+                borderRadius: '6px', padding: '11px 20px',
+                textDecoration: 'none', transition: 'all 240ms cubic-bezier(0.4, 0, 0.2, 1)',
+              }}
+              onMouseEnter={() => setHov('cta')}
+              onMouseLeave={() => setHov(null)}
+            >
+              Start a conversation
+            </a>
           </div>
+        </div>
       </div>
-    </div>
 
       {/* ── WATERMARK & BOTTOM BAR ────────────────────────────────────────────── */}
       <div style={{ width: '100%', flexShrink: 0 }}>

@@ -1,4 +1,4 @@
-// src/components/Experience.tsx
+//src/components/sections/Experience.tsx
 // Mobile: single-column vertical timeline with left border accent
 // Desktop: original alternating zigzag layout preserved
 // Tags, bullets, hover effects all preserved

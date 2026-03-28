@@ -1,4 +1,4 @@
-// src/components/sections/EngineeringPhilosophy/index.tsx
+//src/components/sections/EngineeringPhilosophy/index.tsx
 
 import { useEffect, useRef } from 'react';
 import { gsap } from 'gsap';
@@ -51,20 +51,32 @@ const EngineeringPhilosophy = () => {
   useEffect(() => {
     if (!ref.current) return;
     const ctx = gsap.context(() => {
-      gsap.from('.phil-step', {
-        y: 28,
-        opacity: 0,
-        stagger: 0.13,
-        duration: 0.7,
-        ease: 'power2.out',
-        scrollTrigger: {
-          trigger: ref.current,
-          start: 'top 80%',
-          once: true,
-        },
-      });
+      const elements = gsap.utils.toArray('.phil-step');
+      if (elements.length > 0) {
+        gsap.from(elements, {
+          y: 28,
+          opacity: 0,
+          stagger: 0.13,
+          duration: 0.7,
+          ease: 'power2.out',
+          scrollTrigger: {
+            trigger: ref.current,
+            start: 'top 80%',
+            once: true,
+          },
+        });
+      }
     }, ref.current);
-    return () => ctx.revert();
+    
+    // Add a small delay for ScrollTrigger refresh to catch layout changes
+    const timeout = setTimeout(() => {
+      ScrollTrigger.refresh();
+    }, 100);
+
+    return () => {
+      clearTimeout(timeout);
+      ctx.revert();
+    };
   }, []);
 
   return (

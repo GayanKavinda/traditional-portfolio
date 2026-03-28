@@ -1,4 +1,4 @@
-// src/components/ArchDiagram.tsx
+//src/components/sections/ArchDiagram.tsx
 // Interactive architecture diagram for "Distributed Task Engine".
 // Replaces the project screenshot placeholder.
 // Nodes highlight on hover/click and show a description panel below.

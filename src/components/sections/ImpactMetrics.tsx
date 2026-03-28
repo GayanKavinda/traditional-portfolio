@@ -1,4 +1,4 @@
-// src/components/ImpactMetrics.tsx
+//src/components/sections/ImpactMetrics.tsx
 // Senior impact metrics — no vanity stats.
 // Replaces "Lines of Code: Infinity" with real engineering outcomes.
 // Mobile: 2x2 grid; Desktop: 4-column row with crimson dividers.

@@ -1,4 +1,4 @@
-// src/components/TechStack/SkillChip.tsx
+//src/components/sections/TechStack/SkillChip.tsx
 
 import { ICON_MAP } from './constants';
 

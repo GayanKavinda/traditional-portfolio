@@ -1,4 +1,4 @@
-// src/components/Certifications.tsx
+//src/components/sections/Certifications.tsx
 // Modern redesign: Gradient-bordered cards with subtle glow effects and badge-style presentation
 
 import { useEffect, useRef } from 'react';

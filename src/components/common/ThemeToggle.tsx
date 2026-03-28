@@ -1,4 +1,4 @@
-//src/components/ThemeToggle.tsx
+//src/components/common/ThemeToggle.tsx
 
 import { useTheme } from '@/context/ThemeProvider';
 

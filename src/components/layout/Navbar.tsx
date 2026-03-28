@@ -1,4 +1,4 @@
-//src/components/Navbar.tsx
+//src/components/layout/Navbar.tsx
 
 import { useEffect, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';

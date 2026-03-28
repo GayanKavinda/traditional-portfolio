@@ -1,4 +1,4 @@
-// src/components/sections/EngineeringPhilosophy/mockups/SimplicityMockup.tsx
+//src/components/sections/EngineeringPhilosophy/mockups/SimplicityMockup.tsx
 
 import { useEffect, useRef } from 'react';
 import { gsap } from 'gsap';

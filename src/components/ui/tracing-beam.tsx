@@ -88,7 +88,8 @@ export const TracingBeam = ({
             d={`M 10 0V ${svgHeight}`}
             fill="none"
             stroke="#C41E3A"
-            strokeOpacity="0.25"
+            strokeOpacity="0.45"
+            strokeWidth="1.5"
             transition={{
               duration: 10,
             }}
@@ -97,7 +98,7 @@ export const TracingBeam = ({
             d={`M 10 0V ${svgHeight}`}
             fill="none"
             stroke="url(#gradient)"
-            strokeWidth="1.25"
+            strokeWidth="2"
             className="motion-reduce:hidden"
             transition={{
               duration: 10,

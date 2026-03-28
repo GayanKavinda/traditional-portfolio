@@ -1,4 +1,4 @@
-// src/components/Projects.tsx
+//src/components/sections/Projects.tsx
 // Mobile: all cards stacked single-column
 // Desktop: original hero + 2-col row layout preserved
 // Added: architecture diagram hint on hero card, case study CTA

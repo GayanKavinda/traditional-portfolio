@@ -1,4 +1,4 @@
-// src/components/sections/Testimonials.tsx
+//src/components/sections/Testimonials.tsx
 
 import React from "react";
 import { motion } from "motion/react";
@@ -163,4 +163,4 @@ export const TestimonialsColumn = (props: {
 };
 
 export default Testimonials;
-
+

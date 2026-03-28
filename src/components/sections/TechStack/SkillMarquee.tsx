@@ -1,4 +1,4 @@
-// src/components/TechStack/SkillMarquee.tsx
+// src/components/sections/TechStack/SkillMarquee.tsx
 // Row 1 scrolls LEFT  (Frontend + Backend)   — 60 s
 // Row 2 scrolls RIGHT (Infra + Data)         — 72 s
 // True seamless loop: the Marquee component duplicates children internally.

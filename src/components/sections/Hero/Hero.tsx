@@ -1,4 +1,4 @@
-//src/components/Hero.tsx
+//src/components/sections/Hero/Hero.tsx
 
 import { useEffect, useRef } from 'react';
 import { gsap } from 'gsap';

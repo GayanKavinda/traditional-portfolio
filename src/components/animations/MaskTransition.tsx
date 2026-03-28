@@ -1,4 +1,4 @@
-//src/components/MaskTransition.tsx
+//src/components/animations/MaskTransition.tsx
 
 import { useEffect, useRef } from 'react';
 import { gsap } from 'gsap';

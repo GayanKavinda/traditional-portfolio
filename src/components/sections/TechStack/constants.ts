@@ -1,4 +1,4 @@
-// src/components/TechStack/constants.ts
+//src/components/sections/TechStack/constants.ts
 
 export const CR  = '#C41E3A';
 export const GD  = '#D4891A';
